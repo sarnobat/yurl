@@ -123,7 +123,7 @@ public class YurlStash {
 									System.err.println("appendToTextFile() - successfully appended 2 "
 											+ iUrl);
 								} else {
-									System.err.println("appendToTextFile() - error appending " + iUrl);
+									System.err.println("appendToTextFile() - 4 error appending " + iUrl);
 								}
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
@@ -170,7 +170,7 @@ public class YurlStash {
 			    System.err.println("appendToTextFileSync() - successfully appended 3 "
 			                    + iUrl);
 			} else {
-			    System.err.println("appendToTextFileSync() - error appending " + iUrl);
+			    System.err.println("appendToTextFileSync() - 1 error appending " + iUrl);
 			}
 		}
 		
@@ -194,7 +194,7 @@ public class YurlStash {
                     System.err.println("appendToTextFileSync() - successfully appended 4 "
                                     + iUrl);
             } else {
-                    System.err.println("appendToTextFileSync() - error appending " + iUrl);
+                    System.err.println("appendToTextFileSync() - 2 error appending " + iUrl);
             }
         }
 
@@ -228,7 +228,7 @@ public class YurlStash {
 							System.err.println("appendToTextFile() - successfully appended 5 "
 									+ iUrl + " to " + queueFile);
 						} else {
-							System.err.println("appendToTextFile() - error appending " + iUrl);
+							System.err.println("appendToTextFile() - 3 error appending " + iUrl);
 						}
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
