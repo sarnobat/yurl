@@ -123,7 +123,7 @@ public class YurlStash {
 									System.err.println("appendToTextFile() - successfully appended 2 "
 											+ iUrl);
 								} else {
-									System.err.println("appendToTextFile() - 4 error appending " + iUrl);
+									System.err.println("launchAsynchronousTasksHttpcat() - 4 error appending " + iUrl);
 								}
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
