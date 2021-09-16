@@ -240,7 +240,8 @@ public class YurlStash {
 		}
 		
 		private static String getTitle(final URL iUrl) {
-			System.err.println("YurlStash.YurlResource.getTitle() - are we still using this? If not, delete this.");
+			//System.err.println("YurlStash.YurlResource.getTitle() - are we still using this? If not, delete this.");
+                        System.err.println("YurlStash.YurlResource.getTitle() - we are still using this. Ideally we shouldn't.");
 			String title = "";
 			try {
 				title = Executors

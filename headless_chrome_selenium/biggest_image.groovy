@@ -27,10 +27,10 @@ import com.google.common.collect.Ordering;
  */
 public class BiggestImage {
 
-	private static final String CHROMEDRIVER_PATH = "/sarnobat.garagebandbroken/trash/chromedriver";
+//	private static final String CHROMEDRIVER_PATH = "/sarnobat.garagebandbroken/trash/chromedriver";
 
-	// private static final String CHROMEDRIVER_PATH =
-	// "/home/sarnobat/github/yurl/chromedriver";
+//	 private static final String CHROMEDRIVER_PATH =  "/home/sarnobat/github/yurl/chromedriver";
+       private static final String CHROMEDRIVER_PATH =  "/media/sarnobat/homes/sarnobat/github/yurl/chromedriver";
 
 	/**
 	 * Ascending like du
