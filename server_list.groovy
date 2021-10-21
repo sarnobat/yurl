@@ -1,4 +1,3 @@
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
@@ -93,6 +92,10 @@ public class YurlList {
 				// This takes too long.
 //				downloadedVideos
 //						.addAll(getDownloadedVideos2017(DOWNLOADED_VIDEOS_2017));
+
+				// TODO 2021-09: if possible, don't hide loops inside helper methods,
+				// though in this case maybe it's ok. Ideally, a lambda would make 
+				// it more transparent
 				retVal1.put(
 						"urls",
 						getItemsAtLevelAndChildLevels(iRootId, downloadedVideos));
@@ -145,17 +148,16 @@ public class YurlList {
 				ret.add(elements[0]);
 			}
 			System.out
-					.println("YurlList.YurlResource.getDownloadedVideos2017() end");
+					.println("[INFO] YurlList.YurlResource.getDownloadedVideos2017() end");
 			return ret;
 		}
 
 		private static JSONObject getItemsAtLevelAndChildLevels(
 				Integer iRootId, Collection<String> downloadedVideos)
 				throws JSONException, IOException {
-			System.out
-					.println("YurlList.YurlResource.getItemsAtLevelAndChildLevels()");
+			System.err
+					.println("[INFO] YurlList.YurlResource.getItemsAtLevelAndChildLevels() - begin");
 			JSONObject urls = new JSONObject();
-			System.out.println("getItemsAtLevelAndChildLevels() begin");
 			Collection<String> categoriesToGetUrlsFrom = ImmutableList
 					.<String> builder().add(iRootId.toString())
 					.addAll(getChildCategories(iRootId.toString())).build();
@@ -164,12 +166,13 @@ public class YurlList {
 
 			for (String categoryId : categoriesToGetUrlsFrom) {
 				System.out
-						.println("YurlList.YurlResource.getItemsAtLevelAndChildLevels() "
+						.println("[INFO] YurlList.YurlResource.getItemsAtLevelAndChildLevels() "
 								+ categoryId);
 				if (categoryId.length() > 10) {
 					throw new RuntimeException("Not a category ID: "
 							+ categoryId);
 				}
+				// TODO 2021-09 - don't hide loops inside helper methods
 				JSONArray urlsInCategory = getUrlsInCategory(categoryId,
 						orderMap, downloadedVideos);
 				urls.put(categoryId, urlsInCategory);
@@ -196,13 +199,13 @@ public class YurlList {
 				Collection<String> downloadedVideos) throws IOException {
 				
 			System.err.println("[DEBUG] getUrlsInCategory() - categoryId = " + categoryId);
-String p = 	System                                        .getProperty("user.home")                                        + "/github/yurl/tmp/urls/"                                        + categoryId + ".json";
+			// TODO 2021-09 - externalize the whole dir. 
+			String p = 	System.getProperty("user.home") + "/github/yurl/tmp/urls/"                                        + categoryId + ".json";
+
 			// Create the file if it doesn't exist
-			java.nio.file.Path urlsInCategoryJsonFile = Paths.get(p
-					);
-System.err.println("[DEBUG] getUrlsInCategory() - " + p 
-                                        );
-			if (!urlsInCategoryJsonFile.toFile().exists()) {
+			java.nio.file.Path urlsInCategoryJsonFile = Paths.get(p);
+			System.err.println("[DEBUG] getUrlsInCategory() - json file: " + p);
+			if (!urlsInCategoryJsonFile.toFile().exists() || Boolean.valueOf(System.getProperty("cacheUrls", "true")) == false) {
 			
 				System.err.println("[DEBUG] getUrlsInCategory() - no file containing urls for this category. Generating it.");	
 
@@ -213,21 +216,28 @@ System.err.println("[DEBUG] getUrlsInCategory() - " + p
 								.toFile(), "UTF-8");
 
 				List<String> remove = getRemoveLines(lines1);
-				String p2 = System.getProperty("user.home") + "/sarnobat.git/db/yurl_flatfile_db/yurl_master.txt";
-				List<String> lines = FileUtils.readLines(
-						Paths.get(p2)
-								.toFile(), "UTF-8");
+				// TODO 2021-09 - use a property for the whole file
+				String p2 = System.getProperty("urlsFile",System.getProperty("user.home") + "/db.git/yurl_flatfile_db/yurl_master.txt");
+				
+				System.err.println("[INFO] getUrlsInCategory() - path = " + p2);
+				List<String> lines = FileUtils.readLines(Paths.get(p2).toFile(), "UTF-8");
+				System.err.println("[INFO] getUrlsInCategory() - lines = " + lines.size());
 
 				Map<String, String> userImages = getUserImages(Paths
-						.get(System.getProperty("user.home") + "/sarnobat.git/db/yurl_flatfile_db/yurl_master_images.txt"));
+						.get(System.getProperty("user.home") + "/db.git/yurl_flatfile_db/yurl_master_images.txt"));
 
 				for (String line : filterByCategory(
 						filterToBeRemovedLines(lines, remove), categoryId)) {
-
-						String[] elements;
+					System.err.println("[DEBUG] getUrlsInCategory() - line = " + line);
+					String[] elements;
+					if (categoryId.equals("221013") && line.contains("B07GCKZKX8")) {
+						System.err.println("[ERROR] getUrlsInCategory() - should have been removed:  B07GCKZKX8");
+						System.exit(-1);
+					}
 					try {
 						elements = line.split("::");
 						if (elements.length < 3) {
+							System.err.println("[WARN] getUrlsInCategory() - line has unexpected format: " + line);
 							continue;
 						}
 						@SuppressWarnings("unused")
@@ -235,6 +245,7 @@ System.err.println("[DEBUG] getUrlsInCategory() - " + p
 						String url = elements[1];
 						String timestamp = elements[2];
 						
+						// backward compatibility
 						if (url.length() == 13) {
 							url = elements[2];
 							timestamp = elements[1];
@@ -244,6 +255,11 @@ System.err.println("[DEBUG] getUrlsInCategory() - " + p
 						// TODO: moving a url will need reimplementing on the client
 						// and server
 						urlObj1.put("id", "STOP_RELYING_ON_THIS");
+						
+						if (categoryId.equals("221013") && url.contains("B07GCKZKX8")) {
+							System.err.println("[ERROR] getUrlsInCategory() - url should have been removed:  B07GCKZKX8");
+							System.exit(-1);
+						}
 						urlObj1.put("url", url);
 						urlObj1.put("created", Long.parseLong(timestamp));
 						if (orderMap.containsKey(url)) {
@@ -258,7 +274,7 @@ System.err.println("[DEBUG] getUrlsInCategory() - " + p
 						}
 						urlObj1.put("parentId", categoryId);
 						urlObj1.put("title", "<fill this in>");
-						System.err.println("[DEBUG] getUrlsInCategory() " + categoryId + "::" + p + "::" + url);
+						System.err.println("[DEBUG] getUrlsInCategory() -  about to add " + categoryId + "::" + p + "::" + url);
 						if (userImages.keySet().contains(url)) {
 							urlObj1.put("user_image", userImages.get(url));
 						}
@@ -271,6 +287,9 @@ System.err.println("[DEBUG] getUrlsInCategory() - " + p
 					}
 				}
 				System.err.println("[DEBUG] getUrlsInCategory() urlsInCategoryJsonFile.length() = " + urlsInCategory.length() );
+				if (urlsInCategory.length() == 0) {
+					System.err.println("[WARN] getUrlsInCategory() No urls in category " + categoryId);
+				}
 				FileUtils.write(urlsInCategoryJsonFile.toFile(),
 						urlsInCategory.toString(2), "UTF-8");
 			}
@@ -296,28 +315,89 @@ System.err.println("[DEBUG] getUrlsInCategory() - " + p
 		private static List<String> filterToBeRemovedLines(List<String> lines,
 				List<String> remove1) { // TODO: this should be a HashSet
 			List<String> remove = removeField(remove1, 3);
-			System.out
-					.println("YurlList.YurlResource.filterToBeRemovedLines() remove = "
-							+ remove);
+			System.err
+					.println("[DEBUG] YurlList.YurlResource.filterToBeRemovedLines() remove = "
+							+ remove.toString().substring(0,300));
+							
+			System.err
+					.println("[DEBUG] YurlList.YurlResource.filterToBeRemovedLines() remove = "
+							+ remove.size());
+							
+			for (String line : remove) {
+				if (line.contains("B07L4CTWV2")) {
+					System.err.println("[WARN] filterToBeRemovedLines() - 1 - This needs to get removed (but it doesn't - why? Because of plus signs i think): " + line);
+				}
+				if (line.equals("-221013::https://www.amazon.com/Hawaii/dp/B07L4CTWV2/ref=sr_1_1?dchild=1&keywords=aerial+america&qid=1630798824&s=instant-video&sr=1-1")) {
+					System.err.println("[WARN] filterToBeRemovedLines() - 2 - This needs to get removed (but it doesn't - why?): " + line);
+				}
+			}
+			boolean found = false;
+			for (String line : remove1) {
+				if (line.contains("B07GCKZKX8")) {
+					found = true;
+				}
+				if (line.contains("B07L4CTWV2")) {
+					System.err.println("[WARN] filterToBeRemovedLines() - 5 - This needs to get removed (but it doesn't - why?): " + line);
+				}
+				if (line.equals("-221013::https://www.amazon.com/Hawaii/dp/B07L4CTWV2/ref=sr_1_1?dchild=1&keywords=aerial+america&qid=1630798824&s=instant-video&sr=1-1::1631850545040")) {
+					System.err.println("[WARN] filterToBeRemovedLines() - 6 - This needs to get removed (but it doesn't - why?): " + line);
+				}
+			}
+			if (!found) {
+				System.exit(-1);
+			}
+			if (!remove .contains("-221013::https://www.amazon.com/Hawaii/dp/B07L4CTWV2/ref=sr_1_1?dchild=1&keywords=aerial+america&qid=1630798824&s=instant-video&sr=1-1")) {
+				System.err.println("[WARN] YurlList.YurlResource.filterToBeRemovedLines() 3 should have been recorded as deleted: Aerial America B07L4CTWV2" );
+				System.exit(-1);
+			}
+
+			if (!remove1.contains("-221013::https://www.amazon.com/Hawaii/dp/B07L4CTWV2/ref=sr_1_1?dchild=1&keywords=aerial+america&qid=1630798824&s=instant-video&sr=1-1::1631850545040")) {
+				System.err.println("[WARN] YurlList.YurlResource.filterToBeRemovedLines() 4 should have been recorded as deleted: Aerial America B07L4CTWV2" );
+				System.exit(-1);
+			}
 			List<String> ret = new LinkedList<String>();
 			for (String line : lines) {
-				String lineWithout3rdField = removeField(line, 2);
+			
+				String[] elements = line.split("::");
+				if (elements.length != 3) {
+					System.err.println("[DEBUG] YurlList.YurlResource.filterToBeRemovedLines() line doesn't contain 3 fields, ignoring: " + line);
+					System.err.println("[DEBUG] YurlList.YurlResource.filterToBeRemovedLines() line doesn't contain 3 fields, ignoring: " + elements);
+//					System.exit(-1);
+					continue;
+				}
+				String categoryIdElement = elements[0];
+				String url = elements[1];
+				String timestamp = elements[2];
+				
+				// backward compatibility
+				if (url.length() == 13) {
+					url = elements[2];
+					timestamp = elements[1];
+				}
+				
+				String lineWithoutTimestamp = categoryIdElement + "::" + url;
+				
+				String lineWithout3rdField = lineWithoutTimestamp;
+				//String lineWithout3rdField = removeField(line, 2);
+				
 				if (remove.contains("-" + lineWithout3rdField)) {
-					System.out
-							.println("YurlList.YurlResource.filterToBeRemovedLines() was removed: "
-									+ line);
+					System.err.println("[DEBUG] YurlList.YurlResource.filterToBeRemovedLines() was removed: " + line);
 				} else {
+					// add to output
+				
+					if (line.contains("B07L4CTWV2")) {
+//						System.err.println("[ERROR] filterToBeRemovedLines() - should have been removed if category is 221013 : B07L4CTWV2, full line is: " + line);
+					}
 					if (line.startsWith("221013::https://www.amazon.com/ACCO-Binder-Cli")) {
-						System.out
-								.println("YurlList.YurlResource.filterToBeRemovedLines() ERROR 1: "
-										+ line);
-						System.out
-								.println("YurlList.YurlResource.filterToBeRemovedLines() ERROR 2: "
-										+ remove.get(0));
+						System.err.println("YurlList.YurlResource.filterToBeRemovedLines() ERROR 1: " + line);
+						System.err.println("YurlList.YurlResource.filterToBeRemovedLines() ERROR 2: "+ remove.get(0));
 					}
 					ret.add(line);
 				}
+				
+				
 			}
+			System.err.println("[INFO] YurlList.YurlResource.filterToBeRemovedLines() urls that were not deleted: "+ ret.size());
 			return ImmutableList.copyOf(ret);
 		}
 
@@ -356,8 +436,8 @@ System.err.println("[DEBUG] getUrlsInCategory() - " + p
 					String imageUrl = elements[1];
 					ret.put(url, imageUrl);
 				} catch (Exception e) {
-					e.printStackTrace();
-					System.err.println("[ERROR] " + e.getMessage());
+					//e.printStackTrace();
+					System.err.println("[WARN] getUserImages() line = " + line + "\tmesssage = " + e.getMessage());
 				}
 			}
 			return ImmutableMap.copyOf(ret);
@@ -365,10 +445,13 @@ System.err.println("[DEBUG] getUrlsInCategory() - " + p
 
 		private static List<String> filterByCategory(List<String> lines,
 				final String categoryId) {
+
 			return FluentIterable.from(lines).filter(new Predicate<String>() {
 				@Override
 				public boolean apply(@Nullable String input) {
-					return input.startsWith(categoryId);
+					boolean accept = input.startsWith(categoryId);
+					System.err.println("[DEBUG] filterByCategory() " + accept + ": "+ input );
+					return accept;
 				}
 			}).toList();
 		}
