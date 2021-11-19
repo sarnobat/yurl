@@ -230,7 +230,7 @@ public class YurlList {
 				for (String line : filterByCategory(
 						filterToBeRemovedLines(lines, remove), categoryId)) {
 					System.err.println("[DEBUG] getUrlsInCategory() - line = " + line);
-					String[] elements;
+					String[] elements = {} ;
 					if (categoryId.equals("221013") && line.contains("RabbitMQ-Depth-Gavin-M-Roy")) {
 						found = true;
 					}

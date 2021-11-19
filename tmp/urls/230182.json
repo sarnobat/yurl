@@ -908,5 +908,23 @@
     "url": "https://www.amazon.com/Mezzetta-Sliced-Hot-Jalapeno-Peppers/dp/B00112JH0U/ref=sr_1_17_0o_fs?dchild=1&keywords=crunchy+fresh+jalapenos&qid=1632524903&sr=8-17",
     "parentId": "230182",
     "ordinal": 1632524965323
+  },
+  {
+    "downloaded_video": false,
+    "created": 1634860509,
+    "id": "STOP_RELYING_ON_THIS",
+    "title": "<fill this in>",
+    "url": "https://www.amazon.com/Designing-Data-Intensive-Applications-Reliable-Maintainable/dp/1449373321/ref=sr_1_1?crid=3QU47RY7VLJOP&dchild=1&keywords=designing+data+intensive+applications&qid=1634860500&s=books&sprefix=designing+data+int%2Cstripbooks%2C244&sr=1-1",
+    "parentId": "230182",
+    "ordinal": 1634860509
+  },
+  {
+    "downloaded_video": false,
+    "created": 1635663567,
+    "id": "STOP_RELYING_ON_THIS",
+    "title": "<fill this in>",
+    "url": "https://www.amazon.com/Complete-Color-Harmony-Information-Professional/dp/1592530311/ref=sr_1_3?dchild=1&keywords=Complete+Color+Harmony&qid=1635658497&sr=8-3",
+    "parentId": "230182",
+    "ordinal": 1635663567
   }
 ]
