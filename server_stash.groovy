@@ -106,7 +106,7 @@ public class YurlStash {
 								throw new RuntimeException("Non-existent: " + file.getAbsolutePath());
 							}
 							String command = "echo '" + iUrl + "::" + theTitle + "' | tee -a '" + titleFileStr + "'";
-							System.err.println("appendToTextFile() - " + command);
+							System.err.println("appendToTextFile() - command = " + command);
 							Process p;
 							try {
 								p = new ProcessBuilder()

@@ -226,10 +226,14 @@ public class YurlList {
 				Map<String, String> userImages = getUserImages(Paths
 						.get(System.getProperty("user.home") + "/db.git/yurl_flatfile_db/yurl_master_images.txt"));
 
+				boolean found = false;
 				for (String line : filterByCategory(
 						filterToBeRemovedLines(lines, remove), categoryId)) {
 					System.err.println("[DEBUG] getUrlsInCategory() - line = " + line);
 					String[] elements;
+					if (categoryId.equals("221013") && line.contains("RabbitMQ-Depth-Gavin-M-Roy")) {
+						found = true;
+					}
 					if (categoryId.equals("221013") && line.contains("B07GCKZKX8")) {
 						System.err.println("[ERROR] getUrlsInCategory() - should have been removed:  B07GCKZKX8");
 						System.exit(-1);
@@ -285,6 +289,10 @@ public class YurlList {
 						e.printStackTrace();
 						continue;
 					}
+				}
+				if (!found) {
+					System.err.println("[ERROR] getUrlsInCategory() yurl httpcat pipe is not reliable RabbitMQ");
+//					System.exit(-1);
 				}
 				System.err.println("[DEBUG] getUrlsInCategory() urlsInCategoryJsonFile.length() = " + urlsInCategory.length() );
 				if (urlsInCategory.length() == 0) {
@@ -356,6 +364,7 @@ public class YurlList {
 				System.exit(-1);
 			}
 			List<String> ret = new LinkedList<String>();
+			boolean found2 = false;
 			for (String line : lines) {
 			
 				String[] elements = line.split("::");
@@ -364,6 +373,9 @@ public class YurlList {
 					System.err.println("[DEBUG] YurlList.YurlResource.filterToBeRemovedLines() line doesn't contain 3 fields, ignoring: " + elements);
 //					System.exit(-1);
 					continue;
+				}
+				if (line.contains("RabbitMQ-Depth-Gavin-M-Roy")) {
+					found2 = true;
 				}
 				String categoryIdElement = elements[0];
 				String url = elements[1];
@@ -397,6 +409,11 @@ public class YurlList {
 				
 				
 			}
+			if (!found2) {
+				System.err.println("[DEBUG] filterToBeRemovedLines() RabbitMQ");
+				System.exit(-1);
+			}
+			
 			System.err.println("[INFO] YurlList.YurlResource.filterToBeRemovedLines() urls that were not deleted: "+ ret.size());
 			return ImmutableList.copyOf(ret);
 		}
