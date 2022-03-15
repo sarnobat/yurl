@@ -772,8 +772,8 @@ function getCategoryThumbnailsHtml(categoryId, categoryName, urlsInCategory1, li
 function getDisplayImageUrl(item) {
 	var url = item.url;
 	var specialSiteImageUrl = getSpecialSiteUrl(url);
-	if (url.match(".jpg\??") || url.match(/.*jpg/i) || url.match(".gif$")
-			|| url.match(".png\??") || url.match("images.q=tbn:")) {
+	if (url.match(".jpg\??") || url.match(/.*jpg/i) || url.match(/.gif$/)
+			|| url.match(/\.png\??/) || url.match("images.q=tbn:")) {
 		displayImageUrl = url;
 	} else if (specialSiteImageUrl != null) {
 		displayImageUrl = specialSiteImageUrl;
