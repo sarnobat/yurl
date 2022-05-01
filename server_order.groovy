@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableMap;
 // TODO: Use javax.json.* for immutability
 public class YurlOrder {
 	
-	private static final String YURL_ORDINALS = System.getProperty("user.home") + "/sarnobat.git/db/yurl_flatfile_db/yurl_master_ordinals.txt";
+	private static final String YURL_ORDINALS = System.getProperty("user.home") + "/db.git/yurl_flatfile_db/yurl_master_ordinals.txt";
 
 	private static final String CYPHER_URI = "http://netgear.rohidekar.com:7474/db/data/cypher";
 	

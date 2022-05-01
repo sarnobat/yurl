@@ -274,10 +274,10 @@ public class YurlStash {
 				@QueryParam("linkUrl") String iUrl,
 				@QueryParam("categoryId") String iCategoryId)
 				throws IOException, JSONException {
-			System.err.println("Yurl.YurlResource.changeImage() begin");
+			System.err.println("YurlStash.java::YurlResource.changeImage() begin");
 			
-			FileUtils.write(Paths.get(System.getProperty("user.home") + "/sarnobat.git/db/yurl_flatfile_db/yurl_master_images.txt").toFile(), iUrl + "::" + imageUrl + "\n", "UTF-8", true);
-			System.err.println("Yurl.YurlResource.changeImage() - success: " + iUrl + " :: " + imageUrl);
+			FileUtils.write(Paths.get(System.getProperty("user.home") + "/db.git/yurl_flatfile_db/yurl_master_images.txt").toFile(), iUrl + "::" + imageUrl + "\n", "UTF-8", true);
+			System.err.println("YurlStash.java::YurlResource.changeImage() - success: " + iUrl + " :: " + imageUrl);
 
 			removeCategoryCacheAsync(iCategoryId);
 

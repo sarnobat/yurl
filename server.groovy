@@ -75,7 +75,7 @@ public class YurlStash {
 	private static final String CYPHER_URI = "http://netgear.rohidekar.com:7474/db/data/cypher";
 //	@Deprecated
 	private static final String TARGET_DIR_PATH = "/media/sarnobat/3TB/new/move_to_unsorted/videos/";
-    private static final String QUEUE_DIR = "/home/sarnobat/sarnobat.git/db/yurl_flatfile_db/";
+    private static final String QUEUE_DIR = System.getProperty("user.home") + "/db.git/yurl_flatfile_db/";
 	//@Deprecated
 	//private static final String QUEUE_FILE = "/home/sarnobat/sarnobat.git/";
 	private static final String QUEUE_FILE = QUEUE_DIR;
@@ -814,7 +814,7 @@ public class YurlStash {
 				throws IOException, JSONException {
 			System.err.println("Yurl.YurlResource.changeImage() begin");
 			
-			FileUtils.write(Paths.get(System.getProperty("user.home") + "/sarnobat.git/db/yurl_flatfile_db/yurl_master_images.txt").toFile(), iUrl + "::" + imageUrl + "\n", "UTF-8", true);
+			FileUtils.write(Paths.get(System.getProperty("user.home") + "/db.git/yurl_flatfile_db/yurl_master_images.txt").toFile(), iUrl + "::" + imageUrl + "\n", "UTF-8", true);
 			System.err.println("Yurl.YurlResource.changeImage() - success: " + iUrl + " :: " + imageUrl);
 
 			removeCategoryCacheAsync(iCategoryId);
@@ -1044,7 +1044,7 @@ public class YurlStash {
 				throws JSONException, IOException {
 			JSONObject ret = new JSONObject();
 			JSONObject categoriesTreeJson;
-			java.nio.file.Path path = Paths.get("/home/sarnobat/github/.cache/" + YurlStash.ROOT_ID + ".json");
+			java.nio.file.Path path = Paths.get(System.getProperty("user.home") + "/github/.cache/" + YurlStash.ROOT_ID + ".json");
 			if (Files.exists(path)) {
 				categoriesTreeJson = new JSONObject(FileUtils.readFileToString(path.toFile(), "UTF-8"));
 			} else {
