@@ -39,12 +39,12 @@ import com.google.common.collect.Multimap;
 public class YurlList {
 
 	// TODO 2020-09: gitdb folder got moved. It can be fixed with symlinks but it's best to have properties for every single file (for readabilitytoo)
-	private static final String YURL_ORDINALS = System.getProperty("user.home")			+ "/sarnobat.git/db/yurl_flatfile_db/yurl_master_ordinals.txt";
+	private static final String YURL_ORDINALS = System.getProperty("user.home")			+ "/db.git/yurl_flatfile_db/yurl_master_ordinals.txt";
 	private static final String DOWNLOADED_VIDEOS = System
-			.getProperty("user.home")			+ "/sarnobat.git/db/auto/yurl_queue_httpcat_videos_downloaded.json";
+			.getProperty("user.home")			+ "/db.git/auto/yurl_queue_httpcat_videos_downloaded.json";
 	private static final String DOWNLOADED_VIDEOS_2017 = System
-			.getProperty("user.home")			+ "/sarnobat.git/db/yurl_flatfile_db/videos_download_succeeded.txt";
-	private static final String QUEUE_DIR = System.getProperty("user.home") + "/sarnobat.git/db/yurl_flatfile_db/";
+			.getProperty("user.home")			+ "/db,git/yurl_flatfile_db/videos_download_succeeded.txt";
+	private static final String QUEUE_DIR = System.getProperty("user.home") + "/db.git/yurl_flatfile_db/";
 	private static final String QUEUE_FILE_TXT_DELETE = "yurl_deleted.txt";
 
 	// TODO: Regenerate the cache file using these sources of truth.
@@ -620,9 +620,9 @@ public class YurlList {
 		}
 
 		private static final String CATEGORY_RELATIONSHIPS = System
-				.getProperty("user.home")				+ "/sarnobat.git/db/yurl_flatfile_db/yurl_category_topology.txt";
+				.getProperty("user.home")				+ "/db.git/yurl_flatfile_db/yurl_category_topology.txt";
 		private static final String CATEGORY_NAMES = System
-				.getProperty("user.home")				+ "/sarnobat.git/db/yurl_flatfile_db/yurl_category_names.txt";
+				.getProperty("user.home")				+ "/db.git/yurl_flatfile_db/yurl_category_names.txt";
 	}
 
 	public static void main(String[] args) throws URISyntaxException,
