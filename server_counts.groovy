@@ -34,7 +34,7 @@ public class YurlCounts {
     private static final String QUEUE_FILE_TXT_MASTER = System.getProperty("user.home") + "/sarnobat.git/" + "yurl_master.txt";
 	private static final String CACHE_DIR = System.getProperty("user.home") + "/github/yurl/tmp/";
 	private static final String CACHE_COUNTS = CACHE_DIR + "/counts/categoryCounts.txt";
-	private static final String CATEGORY_NAMES_FILE = System.getProperty("user.home") + "/sarnobat.git/db/yurl_flatfile_db/yurl_categories_master.txt";
+	private static final String CATEGORY_NAMES_FILE = System.getProperty("user.home") + "/db.git/yurl_flatfile_db/yurl_categories_master.txt";
 	
 	@Path("yurl")
 	// TODO: Rename to YurlResource
