@@ -32,8 +32,6 @@ import org.jsoup.Jsoup;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * (Monolithic)
- * 
  * Deprecation doesn't mean the method can be removed. Only when index.html
  * stops referring to it can it be removed.
  * 
