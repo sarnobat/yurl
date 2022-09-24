@@ -47,7 +47,6 @@ public class YurlStash {
   public static final Integer ROOT_ID = 45;
   private static final String QUEUE_DIR = System
       .getProperty("user.home") + "/db.git/yurl_flatfile_db/";
-  private static final String QUEUE_FILE = QUEUE_DIR;
   private static final String QUEUE_FILE_TXT = "yurl_queue.txt";
   private static final String TITLE_FILE_TXT = "yurl_titles_2017.txt";
   private static final String QUEUE_FILE_TXT_MASTER = "yurl_master.txt";
@@ -73,7 +72,7 @@ public class YurlStash {
       System.err.println("stash() theHttpUrl = " + theHttpUrl);
       try {
         // TODO: append synchronously to new yurl master queue
-        appendToTextFileSync(iUrl, iCategoryId.toString(), QUEUE_FILE,
+        appendToTextFileSync(iUrl, iCategoryId.toString(), YurlStash.QUEUE_DIR,
             YurlStash.QUEUE_FILE_TXT_MASTER);
 
         launchAsynchronousTasksHttpcat(theHttpUrl, iCategoryId);
@@ -107,10 +106,10 @@ public class YurlStash {
           Runnable r = new Runnable() {
             // @Override
             public void run() {
-              String titleFileStr = YurlStash.QUEUE_FILE + "/"
+              String titleFileStr = YurlStash.QUEUE_DIR + "/"
                   + YurlStash.TITLE_FILE_TXT;
               File file = Paths.get(titleFileStr).toFile();
-              File file2 = Paths.get(YurlStash.QUEUE_FILE).toFile();
+              File file2 = Paths.get(YurlStash.QUEUE_DIR).toFile();
               if (!file2.exists()) {
                 throw new RuntimeException(
                     "Non-existent: " + file.getAbsolutePath());
@@ -152,7 +151,7 @@ public class YurlStash {
 
       // This is not (yet) the master file. The master file is written to
       // synchronously.
-      appendToTextFile(iUrl, iCategoryId.toString(), QUEUE_FILE);
+      appendToTextFile(iUrl, iCategoryId.toString(), YurlStash.QUEUE_DIR);
     }
 
     private static void removeCategoryCache(Integer iCategoryId) {
@@ -357,7 +356,7 @@ public class YurlStash {
 
       System.err.println("Yurl.YurlResource.move() begin");
 
-      appendToTextFileSync(iUrl, iNewParentId.toString(), QUEUE_FILE,
+      appendToTextFileSync(iUrl, iNewParentId.toString(), YurlStash.QUEUE_DIR,
           YurlStash.QUEUE_FILE_TXT_MASTER, created);
 
       System.err.println("Yurl.YurlResource.move() 2");
