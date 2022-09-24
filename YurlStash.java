@@ -72,34 +72,46 @@ public class YurlStash {
       System.err.println("stash() theHttpUrl = " + theHttpUrl);
       try {
         String dir1 = YurlStash.QUEUE_DIR;
-        String queueFile1 = dir1 + "/" + YurlStash.QUEUE_FILE_TXT_MASTER;
-        appendToTextFileSync(iUrl, iCategoryId.toString(), dir1, queueFile1);
+        String queueFile1 = dir1 + "/"
+            + YurlStash.QUEUE_FILE_TXT_MASTER;
+        String command1 = "echo '" + iCategoryId.toString() + "::"
+            + iUrl + "::'`date +%s` | tee -a '" + queueFile1 + "'";
+        appendToTextFileSync(iUrl, dir1, command1);
 
-        String queueFile2 = QUEUE_DIR + "/" + YurlStash.QUEUE_FILE_TXT_2017;
-        appendToTextFileSync(theHttpUrl, iCategoryId.toString(), QUEUE_DIR, queueFile2);
-        
+        String queueFile2 = QUEUE_DIR + "/"
+            + YurlStash.QUEUE_FILE_TXT_2017;
+        String command2 = "echo '" + iCategoryId.toString() + "::"
+            + theHttpUrl + "::'`date +%s` | tee -a '" + queueFile2
+            + "'";
+        appendToTextFileSync(theHttpUrl, QUEUE_DIR, command2);
+
         // Delete the url cache file for this category. It will get
         // regenrated next time we load that category page.
         removeCategoryCache(iCategoryId);
-        
+
         _getTitle: {
-        
+
           System.err.println(
               "YurlStash.YurlResource.getTitle() - we are still using this. Ideally we shouldn't.");
           String title = "";
           try {
-            title = Executors.newFixedThreadPool(2).invokeAll(
-                ImmutableSet.<Callable<String>>of(new Callable<String>() {
-                  public String call() throws Exception {
-                    try {
-                      return Jsoup.connect(new URL(theHttpUrl).toString()).get().title();
-                    } catch (org.jsoup.UnsupportedMimeTypeException e) {
-                      System.err.println(
-                          "YurlResource.getTitle() - " + e.getMessage());
-                      return "";
-                    }
-                  }
-                }), 3000L, TimeUnit.SECONDS).get(0).get();
+            title = Executors.newFixedThreadPool(2)
+                .invokeAll(ImmutableSet
+                    .<Callable<String>>of(new Callable<String>() {
+                      public String call() throws Exception {
+                        try {
+                          return Jsoup
+                              .connect(new URL(theHttpUrl).toString())
+                              .get().title();
+                        } catch (org.jsoup.UnsupportedMimeTypeException e) {
+                          System.err
+                              .println("YurlResource.getTitle() - "
+                                  + e.getMessage());
+                          return "";
+                        }
+                      }
+                    }), 3000L, TimeUnit.SECONDS)
+                .get(0).get();
           } catch (InterruptedException e1) {
             e1.printStackTrace();
           } catch (ExecutionException e2) {
@@ -108,7 +120,7 @@ public class YurlStash {
           String theTitle = title;
           if (theTitle != null && theTitle.length() > 0) {
             new Thread(new Runnable() {
-               @Override
+              @Override
               public void run() {
                 String titleFileStr = YurlStash.QUEUE_DIR + "/"
                     + YurlStash.TITLE_FILE_TXT;
@@ -117,8 +129,8 @@ public class YurlStash {
                   throw new RuntimeException(
                       "Non-existent: " + file2.getAbsolutePath());
                 }
-                String command = "echo '" + theHttpUrl + "::" + theTitle
-                    + "' | tee -a '" + titleFileStr + "'";
+                String command = "echo '" + theHttpUrl + "::"
+                    + theTitle + "' | tee -a '" + titleFileStr + "'";
                 System.err.println(
                     "appendToTextFile() - command = " + command);
                 Process p;
@@ -149,12 +161,13 @@ public class YurlStash {
           }
         }
         String dir = YurlStash.QUEUE_DIR;
-        
+
         // This is not (yet) the master file. The master file is written to
         // synchronously.
         String queueFile = dir + "/" + YurlStash.QUEUE_FILE_TXT;
-        String command = "echo '" + iCategoryId.toString() + "::" + theHttpUrl
-            + "::'`date +%s` | tee -a '" + queueFile + "'";
+        String command = "echo '" + iCategoryId.toString() + "::"
+            + theHttpUrl + "::'`date +%s` | tee -a '" + queueFile
+            + "'";
         appendToTextFile(theHttpUrl, dir, queueFile, command);
         System.err.println(
             "YurlStash.YurlResource.stash() sending empty json response. This should work.");
@@ -214,21 +227,17 @@ public class YurlStash {
       }
     }
 
-    private static void appendToTextFileSync(String iUrl, String id,
-        String dir, String queueFile)
-        throws IOException, InterruptedException {
+    private static void appendToTextFileSync(String iUrl, String dir,
+        String command) throws IOException, InterruptedException {
       File file = Paths.get(dir).toFile();
       if (!file.exists()) {
         throw new RuntimeException(
             "Non-existent: " + file.getAbsolutePath());
       }
-      String command = "echo '" + id + "::" + iUrl
-          + "::'`date +%s` | tee -a '" + queueFile + "'";
       System.err.println("appendToTextFileSync() - " + command);
       Process p = new ProcessBuilder().directory(file)
           .command("echo", "hello world")
-          .command("/bin/sh", "-c", command)
-          .inheritIO().start();
+          .command("/bin/sh", "-c", command).inheritIO().start();
       p.waitFor();
       if (p.exitValue() == 0) {
         System.err.println(
@@ -287,20 +296,15 @@ public class YurlStash {
           "YurlStash.java::YurlResource.changeImage() begin");
 
       FileUtils.write(
-          Paths
-              .get(System.getProperty("user.home")
-                  + "/db.git/yurl_flatfile_db/yurl_master_images.txt")
-              .toFile(),
+          Paths.get(QUEUE_DIR + "/yurl_master_images.txt").toFile(),
           iUrl + "::" + imageUrl + "\n", "UTF-8", true);
       System.err.println(
           "YurlStash.java::YurlResource.changeImage() - success: "
               + iUrl + " :: " + imageUrl);
-      final String iCategoryId1 = iCategoryId;
-
       new Thread() {
         @Override
         public void run() {
-          removeCategoryCache(Integer.parseInt(iCategoryId1));
+          removeCategoryCache(Integer.parseInt(iCategoryId));
         }
       }.start();
 
