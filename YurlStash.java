@@ -71,11 +71,12 @@ public class YurlStash {
       String theHttpUrl = URLDecoder.decode(iUrl, "UTF-8");
       System.err.println("stash() theHttpUrl = " + theHttpUrl);
       try {
-        appendToTextFileSync(iUrl, iCategoryId.toString(),
-            YurlStash.QUEUE_DIR, YurlStash.QUEUE_FILE_TXT_MASTER);
+        String dir1 = YurlStash.QUEUE_DIR;
+        String queueFile1 = dir1 + "/" + YurlStash.QUEUE_FILE_TXT_MASTER;
+        appendToTextFileSync(iUrl, iCategoryId.toString(), dir1, queueFile1);
 
-        appendToTextFileSync(theHttpUrl, iCategoryId.toString(), QUEUE_DIR,
-            YurlStash.QUEUE_FILE_TXT_2017);
+        String queueFile2 = QUEUE_DIR + "/" + YurlStash.QUEUE_FILE_TXT_2017;
+        appendToTextFileSync(theHttpUrl, iCategoryId.toString(), QUEUE_DIR, queueFile2);
         
         // Delete the url cache file for this category. It will get
         // regenrated next time we load that category page.
@@ -147,11 +148,12 @@ public class YurlStash {
             }).start();
           }
         }
+        String dir = YurlStash.QUEUE_DIR;
         
         // This is not (yet) the master file. The master file is written to
         // synchronously.
-        appendToTextFile(theHttpUrl, iCategoryId.toString(),
-            YurlStash.QUEUE_DIR);
+        String queueFile = dir + "/" + YurlStash.QUEUE_FILE_TXT;
+        appendToTextFile(theHttpUrl, iCategoryId.toString(), dir, queueFile);
         System.err.println(
             "YurlStash.YurlResource.stash() sending empty json response. This should work.");
         return Response.ok()
@@ -211,9 +213,8 @@ public class YurlStash {
     }
 
     private static void appendToTextFileSync(String iUrl, String id,
-        String dir, String file2)
+        String dir, String queueFile)
         throws IOException, InterruptedException {
-      String queueFile = dir + "/" + file2;
       File file = Paths.get(dir).toFile();
       if (!file.exists()) {
         throw new RuntimeException(
@@ -238,11 +239,10 @@ public class YurlStash {
     }
 
     private static void appendToTextFile(String iUrl, String id,
-        String dir) throws IOException, InterruptedException {
+        String dir, String queueFile) {
       new Thread(new Runnable() {
         @Override
         public void run() {
-          String queueFile = dir + "/" + YurlStash.QUEUE_FILE_TXT;
           File file = Paths.get(dir).toFile();
           if (!file.exists()) {
             throw new RuntimeException(
