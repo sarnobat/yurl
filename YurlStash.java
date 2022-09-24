@@ -71,8 +71,8 @@ public class YurlStash {
       String theHttpUrl = URLDecoder.decode(iUrl, "UTF-8");
       System.err.println("stash() theHttpUrl = " + theHttpUrl);
       try {
-        appendToTextFileSync(iUrl, iCategoryId.toString(), YurlStash.QUEUE_DIR,
-            YurlStash.QUEUE_FILE_TXT_MASTER);
+        appendToTextFileSync(iUrl, iCategoryId.toString(),
+            YurlStash.QUEUE_DIR, YurlStash.QUEUE_FILE_TXT_MASTER);
 
         launchAsynchronousTasksHttpcat(theHttpUrl, iCategoryId);
         System.err.println(
@@ -87,8 +87,8 @@ public class YurlStash {
       }
     }
 
-    private static void launchAsynchronousTasksHttpcat(
-        String iUrl, Integer iCategoryId)
+    private static void launchAsynchronousTasksHttpcat(String iUrl,
+        Integer iCategoryId)
         throws IOException, InterruptedException {
 
       appendToTextFileSync(iUrl, iCategoryId.toString(), QUEUE_DIR,
@@ -102,8 +102,8 @@ public class YurlStash {
 
         String theTitle = getTitleJsoup(new URL(iUrl));
         if (theTitle != null && theTitle.length() > 0) {
-          Runnable r = new Runnable() {
-            // @Override
+          new Thread(new Runnable() {
+             @Override
             public void run() {
               String titleFileStr = YurlStash.QUEUE_DIR + "/"
                   + YurlStash.TITLE_FILE_TXT;
@@ -140,14 +140,14 @@ public class YurlStash {
                 e.printStackTrace();
               }
             }
-          };
-          new Thread(r).start();
+          }).start();
         }
       }
 
       // This is not (yet) the master file. The master file is written to
       // synchronously.
-      appendToTextFile(iUrl, iCategoryId.toString(), YurlStash.QUEUE_DIR);
+      appendToTextFile(iUrl, iCategoryId.toString(),
+          YurlStash.QUEUE_DIR);
     }
 
     private static void removeCategoryCache(Integer iCategoryId) {
@@ -196,8 +196,8 @@ public class YurlStash {
       }
     }
 
-    private static void appendToTextFileSync(String iUrl,
-        String id, String dir, String file2)
+    private static void appendToTextFileSync(String iUrl, String id,
+        String dir, String file2)
         throws IOException, InterruptedException {
       String queueFile = dir + "/" + file2;
       File file = Paths.get(dir).toFile();
@@ -211,8 +211,6 @@ public class YurlStash {
       Process p = new ProcessBuilder().directory(file)
           .command("echo", "hello world")
           .command("/bin/sh", "-c", command)
-          // "touch '" + queueFile + "'; echo '" + id + ":" + iUrl + "' >> '" + queueFile
-          // + "'"
           .inheritIO().start();
       p.waitFor();
       if (p.exitValue() == 0) {
@@ -227,7 +225,7 @@ public class YurlStash {
 
     private static void appendToTextFile(String iUrl, String id,
         String dir) throws IOException, InterruptedException {
-      Runnable r = new Runnable() {
+      new Thread(new Runnable() {
         @Override
         public void run() {
           String queueFile = dir + "/" + YurlStash.QUEUE_FILE_TXT;
@@ -239,12 +237,11 @@ public class YurlStash {
           String command = "echo '" + id + "::" + iUrl
               + "::'`date +%s` | tee -a '" + queueFile + "'";
           System.err.println("appendToTextFile() - " + command);
-          Process p;
           try {
-            p = new ProcessBuilder().directory(file)
+            Process p = new ProcessBuilder().directory(file)
                 .command("echo", "hello world")
-                .command("/bin/sh", "-c", command)
-                .inheritIO().start();
+                .command("/bin/sh", "-c", command).inheritIO()
+                .start();
             try {
               p.waitFor();
             } catch (InterruptedException e) {
@@ -262,8 +259,7 @@ public class YurlStash {
             e.printStackTrace();
           }
         }
-      };
-      new Thread(r).start();
+      }).start();
     }
 
     private static String getTitleJsoup(final URL iUrl) {
@@ -336,8 +332,7 @@ public class YurlStash {
     @GET
     @Path("relate")
     @Produces("application/json")
-    public Response move(
-        @QueryParam("parentId") Integer iNewParentId,
+    public Response move(@QueryParam("parentId") Integer iNewParentId,
         @QueryParam("url") String iUrl,
         @QueryParam("currentParentId") Integer iCurrentParentId,
         @QueryParam("created") Long created)
@@ -345,8 +340,9 @@ public class YurlStash {
 
       System.err.println("Yurl.YurlResource.move() begin");
 
-      appendToTextFileSync(iUrl, iNewParentId.toString(), YurlStash.QUEUE_DIR,
-          YurlStash.QUEUE_FILE_TXT_MASTER, created);
+      appendToTextFileSync(iUrl, iNewParentId.toString(),
+          YurlStash.QUEUE_DIR, YurlStash.QUEUE_FILE_TXT_MASTER,
+          created);
 
       System.err.println("Yurl.YurlResource.move() 2");
       appendToTextFileSync(iUrl, "-" + iCurrentParentId.toString(),
