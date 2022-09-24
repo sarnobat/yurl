@@ -100,18 +100,17 @@ public class YurlStash {
 
       _getTitle: {
 
-        String theTitle = getTitle(new URL(iUrl));
+        String theTitle = getTitleJsoup(new URL(iUrl));
         if (theTitle != null && theTitle.length() > 0) {
           Runnable r = new Runnable() {
             // @Override
             public void run() {
               String titleFileStr = YurlStash.QUEUE_DIR + "/"
                   + YurlStash.TITLE_FILE_TXT;
-              File file = Paths.get(titleFileStr).toFile();
               File file2 = Paths.get(YurlStash.QUEUE_DIR).toFile();
               if (!file2.exists()) {
                 throw new RuntimeException(
-                    "Non-existent: " + file.getAbsolutePath());
+                    "Non-existent: " + file2.getAbsolutePath());
               }
               String command = "echo '" + iUrl + "::" + theTitle
                   + "' | tee -a '" + titleFileStr + "'";
@@ -126,7 +125,6 @@ public class YurlStash {
                 try {
                   p.waitFor();
                 } catch (InterruptedException e) {
-                  // TODO Auto-generated catch block
                   e.printStackTrace();
                 }
                 if (p.exitValue() == 0) {
@@ -139,7 +137,6 @@ public class YurlStash {
                           + iUrl);
                 }
               } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
               }
             }
@@ -269,7 +266,7 @@ public class YurlStash {
       new Thread(r).start();
     }
 
-    private static String getTitle(final URL iUrl) {
+    private static String getTitleJsoup(final URL iUrl) {
       System.err.println(
           "YurlStash.YurlResource.getTitle() - we are still using this. Ideally we shouldn't.");
       String title = "";
