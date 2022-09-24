@@ -153,7 +153,9 @@ public class YurlStash {
         // This is not (yet) the master file. The master file is written to
         // synchronously.
         String queueFile = dir + "/" + YurlStash.QUEUE_FILE_TXT;
-        appendToTextFile(theHttpUrl, iCategoryId.toString(), dir, queueFile);
+        String command = "echo '" + iCategoryId.toString() + "::" + theHttpUrl
+            + "::'`date +%s` | tee -a '" + queueFile + "'";
+        appendToTextFile(theHttpUrl, dir, queueFile, command);
         System.err.println(
             "YurlStash.YurlResource.stash() sending empty json response. This should work.");
         return Response.ok()
@@ -238,8 +240,8 @@ public class YurlStash {
       }
     }
 
-    private static void appendToTextFile(String iUrl, String id,
-        String dir, String queueFile) {
+    private static void appendToTextFile(String iUrl, String dir,
+        String queueFile, String command) {
       new Thread(new Runnable() {
         @Override
         public void run() {
@@ -248,8 +250,6 @@ public class YurlStash {
             throw new RuntimeException(
                 "Non-existent: " + file.getAbsolutePath());
           }
-          String command = "echo '" + id + "::" + iUrl
-              + "::'`date +%s` | tee -a '" + queueFile + "'";
           System.err.println("appendToTextFile() - " + command);
           try {
             Process p = new ProcessBuilder().directory(file)
