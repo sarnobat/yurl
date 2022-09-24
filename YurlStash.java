@@ -32,6 +32,8 @@ import org.jsoup.Jsoup;
 import com.google.common.collect.ImmutableSet;
 
 /**
+ * (Monolithic)
+ * 
  * Deprecation doesn't mean the method can be removed. Only when index.html
  * stops referring to it can it be removed.
  * 
@@ -40,11 +42,9 @@ import com.google.common.collect.ImmutableSet;
  * Only writing to the persistent store (and the associated async tasks) should
  * remain in this thread.
  */
-// TODO: rename to YurlStash
 public class YurlStash {
 
   // TODO: use java properties
-  public static final Integer ROOT_ID = 45;
   private static final String QUEUE_DIR = System
       .getProperty("user.home") + "/db.git/yurl_flatfile_db/";
   private static final String QUEUE_FILE_TXT = "yurl_queue.txt";
@@ -71,7 +71,6 @@ public class YurlStash {
       String theHttpUrl = URLDecoder.decode(iUrl, "UTF-8");
       System.err.println("stash() theHttpUrl = " + theHttpUrl);
       try {
-        // TODO: append synchronously to new yurl master queue
         appendToTextFileSync(iUrl, iCategoryId.toString(), YurlStash.QUEUE_DIR,
             YurlStash.QUEUE_FILE_TXT_MASTER);
 
@@ -89,7 +88,7 @@ public class YurlStash {
     }
 
     private static void launchAsynchronousTasksHttpcat(
-        final String iUrl, Integer iCategoryId)
+        String iUrl, Integer iCategoryId)
         throws IOException, InterruptedException {
 
       appendToTextFileSync(iUrl, iCategoryId.toString(), QUEUE_DIR,
@@ -101,7 +100,7 @@ public class YurlStash {
 
       _getTitle: {
 
-        final String theTitle = getTitle(new URL(iUrl));
+        String theTitle = getTitle(new URL(iUrl));
         if (theTitle != null && theTitle.length() > 0) {
           Runnable r = new Runnable() {
             // @Override
@@ -173,8 +172,8 @@ public class YurlStash {
               + path);
     }
 
-    private static void appendToTextFileSync(final String iUrl,
-        final String id, final String dir, String file2, long created)
+    private static void appendToTextFileSync(String iUrl,
+        final String id, String dir, String file2, long created)
         throws IOException, InterruptedException {
 
       String queueFile = dir + "/" + file2;
@@ -200,8 +199,8 @@ public class YurlStash {
       }
     }
 
-    private static void appendToTextFileSync(final String iUrl,
-        final String id, final String dir, String file2)
+    private static void appendToTextFileSync(String iUrl,
+        String id, String dir, String file2)
         throws IOException, InterruptedException {
       String queueFile = dir + "/" + file2;
       File file = Paths.get(dir).toFile();
@@ -229,9 +228,8 @@ public class YurlStash {
       }
     }
 
-    private static void appendToTextFile(final String iUrl,
-        final String id, final String dir)
-        throws IOException, InterruptedException {
+    private static void appendToTextFile(String iUrl, String id,
+        String dir) throws IOException, InterruptedException {
       Runnable r = new Runnable() {
         // @Override
         public void run() {
@@ -249,13 +247,10 @@ public class YurlStash {
             p = new ProcessBuilder().directory(file)
                 .command("echo", "hello world")
                 .command("/bin/sh", "-c", command)
-                // "touch '" + queueFile + "'; echo '" + id + ":" + iUrl + "' >> '" + queueFile
-                // + "'"
                 .inheritIO().start();
             try {
               p.waitFor();
             } catch (InterruptedException e) {
-              // TODO Auto-generated catch block
               e.printStackTrace();
             }
             if (p.exitValue() == 0) {
@@ -267,7 +262,6 @@ public class YurlStash {
                   "appendToTextFile() - 3 error appending " + iUrl);
             }
           } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
           }
         }
@@ -276,8 +270,6 @@ public class YurlStash {
     }
 
     private static String getTitle(final URL iUrl) {
-      // System.err.println("YurlStash.YurlResource.getTitle() - are we still using
-      // this? If not, delete this.");
       System.err.println(
           "YurlStash.YurlResource.getTitle() - we are still using this. Ideally we shouldn't.");
       String title = "";
@@ -348,9 +340,9 @@ public class YurlStash {
     @Path("relate")
     @Produces("application/json")
     public Response move(
-        @QueryParam("parentId") final Integer iNewParentId,
+        @QueryParam("parentId") Integer iNewParentId,
         @QueryParam("url") String iUrl,
-        @QueryParam("currentParentId") final Integer iCurrentParentId,
+        @QueryParam("currentParentId") Integer iCurrentParentId,
         @QueryParam("created") Long created)
         throws JSONException, IOException, InterruptedException {
 
