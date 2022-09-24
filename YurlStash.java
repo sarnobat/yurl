@@ -74,7 +74,84 @@ public class YurlStash {
         appendToTextFileSync(iUrl, iCategoryId.toString(),
             YurlStash.QUEUE_DIR, YurlStash.QUEUE_FILE_TXT_MASTER);
 
-        launchAsynchronousTasksHttpcat(theHttpUrl, iCategoryId);
+        appendToTextFileSync(theHttpUrl, iCategoryId.toString(), QUEUE_DIR,
+            YurlStash.QUEUE_FILE_TXT_2017);
+        
+        // Delete the url cache file for this category. It will get
+        // regenrated next time we load that category page.
+        removeCategoryCache(iCategoryId);
+        
+        _getTitle: {
+        
+          System.err.println(
+              "YurlStash.YurlResource.getTitle() - we are still using this. Ideally we shouldn't.");
+          String title = "";
+          try {
+            title = Executors.newFixedThreadPool(2).invokeAll(
+                ImmutableSet.<Callable<String>>of(new Callable<String>() {
+                  public String call() throws Exception {
+                    try {
+                      return Jsoup.connect(new URL(theHttpUrl).toString()).get().title();
+                    } catch (org.jsoup.UnsupportedMimeTypeException e) {
+                      System.err.println(
+                          "YurlResource.getTitle() - " + e.getMessage());
+                      return "";
+                    }
+                  }
+                }), 3000L, TimeUnit.SECONDS).get(0).get();
+          } catch (InterruptedException e1) {
+            e1.printStackTrace();
+          } catch (ExecutionException e2) {
+            e2.printStackTrace();
+          }
+          String theTitle = title;
+          if (theTitle != null && theTitle.length() > 0) {
+            new Thread(new Runnable() {
+               @Override
+              public void run() {
+                String titleFileStr = YurlStash.QUEUE_DIR + "/"
+                    + YurlStash.TITLE_FILE_TXT;
+                File file2 = Paths.get(YurlStash.QUEUE_DIR).toFile();
+                if (!file2.exists()) {
+                  throw new RuntimeException(
+                      "Non-existent: " + file2.getAbsolutePath());
+                }
+                String command = "echo '" + theHttpUrl + "::" + theTitle
+                    + "' | tee -a '" + titleFileStr + "'";
+                System.err.println(
+                    "appendToTextFile() - command = " + command);
+                Process p;
+                try {
+                  p = new ProcessBuilder().directory(file2)
+                      .command("echo", "hello world")
+                      .command("/bin/sh", "-c", command).inheritIO()
+                      .start();
+                  try {
+                    p.waitFor();
+                  } catch (InterruptedException e) {
+                    e.printStackTrace();
+                  }
+                  if (p.exitValue() == 0) {
+                    System.err.println(
+                        "appendToTextFile() - successfully appended 2 "
+                            + theHttpUrl);
+                  } else {
+                    System.err.println(
+                        "launchAsynchronousTasksHttpcat() - 4 error appending "
+                            + theHttpUrl);
+                  }
+                } catch (IOException e) {
+                  e.printStackTrace();
+                }
+              }
+            }).start();
+          }
+        }
+        
+        // This is not (yet) the master file. The master file is written to
+        // synchronously.
+        appendToTextFile(theHttpUrl, iCategoryId.toString(),
+            YurlStash.QUEUE_DIR);
         System.err.println(
             "YurlStash.YurlResource.stash() sending empty json response. This should work.");
         return Response.ok()
@@ -85,69 +162,6 @@ public class YurlStash {
         e.printStackTrace();
         throw new JSONException(e);
       }
-    }
-
-    private static void launchAsynchronousTasksHttpcat(String iUrl,
-        Integer iCategoryId)
-        throws IOException, InterruptedException {
-
-      appendToTextFileSync(iUrl, iCategoryId.toString(), QUEUE_DIR,
-          YurlStash.QUEUE_FILE_TXT_2017);
-
-      // Delete the url cache file for this category. It will get
-      // regenrated next time we load that category page.
-      removeCategoryCache(iCategoryId);
-
-      _getTitle: {
-
-        String theTitle = getTitleJsoup(new URL(iUrl));
-        if (theTitle != null && theTitle.length() > 0) {
-          new Thread(new Runnable() {
-             @Override
-            public void run() {
-              String titleFileStr = YurlStash.QUEUE_DIR + "/"
-                  + YurlStash.TITLE_FILE_TXT;
-              File file2 = Paths.get(YurlStash.QUEUE_DIR).toFile();
-              if (!file2.exists()) {
-                throw new RuntimeException(
-                    "Non-existent: " + file2.getAbsolutePath());
-              }
-              String command = "echo '" + iUrl + "::" + theTitle
-                  + "' | tee -a '" + titleFileStr + "'";
-              System.err.println(
-                  "appendToTextFile() - command = " + command);
-              Process p;
-              try {
-                p = new ProcessBuilder().directory(file2)
-                    .command("echo", "hello world")
-                    .command("/bin/sh", "-c", command).inheritIO()
-                    .start();
-                try {
-                  p.waitFor();
-                } catch (InterruptedException e) {
-                  e.printStackTrace();
-                }
-                if (p.exitValue() == 0) {
-                  System.err.println(
-                      "appendToTextFile() - successfully appended 2 "
-                          + iUrl);
-                } else {
-                  System.err.println(
-                      "launchAsynchronousTasksHttpcat() - 4 error appending "
-                          + iUrl);
-                }
-              } catch (IOException e) {
-                e.printStackTrace();
-              }
-            }
-          }).start();
-        }
-      }
-
-      // This is not (yet) the master file. The master file is written to
-      // synchronously.
-      appendToTextFile(iUrl, iCategoryId.toString(),
-          YurlStash.QUEUE_DIR);
     }
 
     private static void removeCategoryCache(Integer iCategoryId) {
@@ -262,31 +276,6 @@ public class YurlStash {
       }).start();
     }
 
-    private static String getTitleJsoup(final URL iUrl) {
-      System.err.println(
-          "YurlStash.YurlResource.getTitle() - we are still using this. Ideally we shouldn't.");
-      String title = "";
-      try {
-        title = Executors.newFixedThreadPool(2).invokeAll(
-            ImmutableSet.<Callable<String>>of(new Callable<String>() {
-              public String call() throws Exception {
-                try {
-                  return Jsoup.connect(iUrl.toString()).get().title();
-                } catch (org.jsoup.UnsupportedMimeTypeException e) {
-                  System.err.println(
-                      "YurlResource.getTitle() - " + e.getMessage());
-                  return "";
-                }
-              }
-            }), 3000L, TimeUnit.SECONDS).get(0).get();
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      } catch (ExecutionException e) {
-        e.printStackTrace();
-      }
-      return title;
-    }
-
     @GET
     @Path("updateImage")
     @Produces("application/json")
@@ -306,21 +295,18 @@ public class YurlStash {
       System.err.println(
           "YurlStash.java::YurlResource.changeImage() - success: "
               + iUrl + " :: " + imageUrl);
+      final String iCategoryId1 = iCategoryId;
 
-      removeCategoryCacheAsync(iCategoryId);
+      new Thread() {
+        @Override
+        public void run() {
+          removeCategoryCache(Integer.parseInt(iCategoryId1));
+        }
+      }.start();
 
       return Response.ok().header("Access-Control-Allow-Origin", "*")
           .entity(new JSONObject().toString())
           .type("application/json").build();
-    }
-
-    private void removeCategoryCacheAsync(final String iCategoryId) {
-      new Thread() {
-        @Override
-        public void run() {
-          removeCategoryCache(Integer.parseInt(iCategoryId));
-        }
-      }.start();
     }
 
     /**
