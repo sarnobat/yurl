@@ -54,10 +54,6 @@ public class YurlStash {
   @Path("yurl")
   public static class YurlResource { // Must be public
 
-    // --------------------------------------------------------------------------------------
-    // Write operations
-    // --------------------------------------------------------------------------------------
-
     @GET
     @Path("stash")
     @Produces("application/json")
@@ -69,19 +65,59 @@ public class YurlStash {
       String theHttpUrl = URLDecoder.decode(iUrl, "UTF-8");
       System.err.println("stash() theHttpUrl = " + theHttpUrl);
       try {
-        String dir1 = YurlStash.QUEUE_DIR;
-        String queueFile1 = dir1 + "/"
-            + YurlStash.QUEUE_FILE_TXT_MASTER;
-        String command1 = "echo '" + iCategoryId.toString() + "::"
-            + iUrl + "::'`date +%s` | tee -a '" + queueFile1 + "'";
-        appendToTextFileSync(iUrl, dir1, command1);
-
-        String queueFile2 = QUEUE_DIR + "/"
-            + YurlStash.QUEUE_FILE_TXT_2017;
-        String command2 = "echo '" + iCategoryId.toString() + "::"
-            + theHttpUrl + "::'`date +%s` | tee -a '" + queueFile2
-            + "'";
-        appendToTextFileSync(theHttpUrl, QUEUE_DIR, command2);
+        {
+          String command = "echo '" + iCategoryId.toString() + "::"
+              + iUrl + "::'`date +%s` | tee -a '"
+              + (YurlStash.QUEUE_DIR + "/"
+                  + YurlStash.QUEUE_FILE_TXT_MASTER)
+              + "'";
+          System.err.println(
+              "YurlStash.YurlResource.appendToTextFileSync()");
+          Process p = new ProcessBuilder()
+              .directory(Paths.get(YurlStash.QUEUE_DIR).toFile())
+              .command("echo", "hello world")
+              .command("/bin/sh", "-c", command).inheritIO().start();
+          try {
+            p.waitFor();
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          if (p.exitValue() == 0) {
+            System.err.println(
+                "YurlStash.YurlResource.appendToTextFileSync() success: "
+                    + command);
+          } else {
+            System.err.println(
+                "YurlStash.YurlResource.appendToTextFileSync() failed: "
+                    + command);
+          }
+        }
+        {
+          String command = "echo '" + iCategoryId.toString() + "::"
+              + theHttpUrl + "::'`date +%s` | tee -a '"
+              + (QUEUE_DIR + "/" + YurlStash.QUEUE_FILE_TXT_2017)
+              + "'";
+          System.err.println(
+              "YurlStash.YurlResource.appendToTextFileSync()");
+          Process p = new ProcessBuilder()
+              .directory(Paths.get(QUEUE_DIR).toFile())
+              .command("echo", "hello world")
+              .command("/bin/sh", "-c", command).inheritIO().start();
+          try {
+            p.waitFor();
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          if (p.exitValue() == 0) {
+            System.err.println(
+                "YurlStash.YurlResource.appendToTextFileSync() success: "
+                    + command);
+          } else {
+            System.err.println(
+                "YurlStash.YurlResource.appendToTextFileSync() failed: "
+                    + command);
+          }
+        }
 
         // Delete the url cache file for this category. It will get
         // regenrated next time we load that category page.
@@ -94,22 +130,18 @@ public class YurlStash {
           String title = "";
           try {
             title = Executors.newFixedThreadPool(2)
-                .invokeAll(ImmutableSet
-                    .<Callable<String>>of(new Callable<String>() {
-                      public String call() throws Exception {
-                        try {
-                          return Jsoup
-                              .connect(new URL(theHttpUrl).toString())
-                              .get().title();
-                        } catch (org.jsoup.UnsupportedMimeTypeException e) {
-                          System.err
-                              .println("YurlResource.getTitle() - "
-                                  + e.getMessage());
-                          return "";
-                        }
-                      }
-                    }), 3000L, TimeUnit.SECONDS)
-                .get(0).get();
+                .invokeAll(ImmutableSet.<Callable<String>>of(() -> {
+                  try {
+                    return Jsoup
+                        .connect(new URL(theHttpUrl).toString()).get()
+                        .title();
+                  } catch (org.jsoup.UnsupportedMimeTypeException e) {
+                    System.err.println(
+                        "YurlStash.YurlResource.jsoupHtmlDump()"
+                            + e.getMessage());
+                    return "";
+                  }
+                }), 3000L, TimeUnit.SECONDS).get(0).get();
           } catch (InterruptedException e1) {
             e1.printStackTrace();
           } catch (ExecutionException e2) {
@@ -117,146 +149,48 @@ public class YurlStash {
           }
           String theTitle = title;
           if (theTitle != null && theTitle.length() > 0) {
-            new Thread(new Runnable() {
-              @Override
-              public void run() {
-                String titleFileStr = YurlStash.QUEUE_DIR + "/"
-                    + YurlStash.TITLE_FILE_TXT;
-                File file2 = Paths.get(YurlStash.QUEUE_DIR).toFile();
-                if (!file2.exists()) {
-                  throw new RuntimeException(
-                      "Non-existent: " + file2.getAbsolutePath());
-                }
-                String command = "echo '" + theHttpUrl + "::"
-                    + theTitle + "' | tee -a '" + titleFileStr + "'";
-                System.err.println(
-                    "appendToTextFile() - command = " + command);
-                Process p;
+            new Thread(() -> {
+              String command = "echo '" + theHttpUrl + "::" + theTitle
+                  + "' | tee -a '" + (YurlStash.QUEUE_DIR + "/"
+                      + YurlStash.TITLE_FILE_TXT)
+                  + "'";
+              System.err.println(
+                  "appendToTextFile() - command = " + command);
+              try {
+                Process p = new ProcessBuilder()
+                    .directory(
+                        Paths.get(YurlStash.QUEUE_DIR).toFile())
+                    .command("echo", "hello world")
+                    .command("/bin/sh", "-c", command).inheritIO()
+                    .start();
                 try {
-                  p = new ProcessBuilder().directory(file2)
-                      .command("echo", "hello world")
-                      .command("/bin/sh", "-c", command).inheritIO()
-                      .start();
-                  try {
-                    p.waitFor();
-                  } catch (InterruptedException e) {
-                    e.printStackTrace();
-                  }
-                  if (p.exitValue() == 0) {
-                    System.err.println(
-                        "appendToTextFile() - successfully appended 2 "
-                            + theHttpUrl);
-                  } else {
-                    System.err.println(
-                        "launchAsynchronousTasksHttpcat() - 4 error appending "
-                            + theHttpUrl);
-                  }
-                } catch (IOException e) {
+                  p.waitFor();
+                } catch (InterruptedException e) {
                   e.printStackTrace();
                 }
+                if (p.exitValue() == 0) {
+                  System.err.println(
+                      "appendToTextFile() - successfully appended 2 "
+                          + theHttpUrl);
+                } else {
+                  System.err.println(
+                      "launchAsynchronousTasksHttpcat() - 4 error appending "
+                          + theHttpUrl);
+                }
+              } catch (IOException e) {
+                e.printStackTrace();
               }
             }).start();
           }
         }
-        String dir = YurlStash.QUEUE_DIR;
-
         // This is not (yet) the master file. The master file is written to
         // synchronously.
-        String queueFile = dir + "/" + YurlStash.QUEUE_FILE_TXT;
-        String command = "echo '" + iCategoryId.toString() + "::"
-            + theHttpUrl + "::'`date +%s` | tee -a '" + queueFile
-            + "'";
-        appendToTextFile(theHttpUrl, dir, queueFile, command);
-        System.err.println(
-            "YurlStash.YurlResource.stash() sending empty json response. This should work.");
-        return Response.ok()
-            .header("Access-Control-Allow-Origin", "*")
-            .entity(new JSONObject().toString())
-            .type("application/json").build();
-      } catch (Exception e) {
-        e.printStackTrace();
-        throw new JSONException(e);
-      }
-    }
-
-    private static void removeCategoryCache(Integer iCategoryId) {
-      java.nio.file.Path path1 = Paths
-          .get(System.getProperty("user.home")
-              + "/github/yurl/tmp/urls/" + iCategoryId + ".json");
-      path1.toFile().delete();
-      System.err.println(
-          "Yurl.YurlResource.launchAsynchronousTasksHttpcat() deleted cache file 1: "
-              + path1);
-
-      java.nio.file.Path path = Paths
-          .get(System.getProperty("user.home")
-              + "/github/yurl/tmp/categories/topology/" + iCategoryId
-              + ".txt");
-      path.toFile().delete();
-      System.err.println(
-          "Yurl.YurlResource.launchAsynchronousTasksHttpcat() deleted cache file 2: "
-              + path);
-    }
-
-    private static void appendToTextFileSync(String iUrl,
-        final String id, String dir, String file2, long created)
-        throws IOException, InterruptedException {
-
-      String queueFile = dir + "/" + file2;
-      File file = Paths.get(dir).toFile();
-      if (!file.exists()) {
-        throw new RuntimeException(
-            "Non-existent: " + file.getAbsolutePath());
-      }
-      String command = "echo '" + id + "::" + iUrl + "::" + created
-          + "' | tee -a '" + queueFile + "'";
-      System.err.println("appendToTextFileSync() - " + command);
-      Process p = new ProcessBuilder().directory(file)
-          .command("echo", "hello world")
-          .command("/bin/sh", "-c", command).inheritIO().start();
-      p.waitFor();
-      if (p.exitValue() == 0) {
-        System.err.println(
-            "appendToTextFileSync() - successfully appended 3 "
-                + iUrl);
-      } else {
-        System.err.println(
-            "appendToTextFileSync() - 1 error appending " + iUrl);
-      }
-    }
-
-    private static void appendToTextFileSync(String iUrl, String dir,
-        String command) throws IOException, InterruptedException {
-      File file = Paths.get(dir).toFile();
-      if (!file.exists()) {
-        throw new RuntimeException(
-            "Non-existent: " + file.getAbsolutePath());
-      }
-      System.err.println("appendToTextFileSync() - " + command);
-      Process p = new ProcessBuilder().directory(file)
-          .command("echo", "hello world")
-          .command("/bin/sh", "-c", command).inheritIO().start();
-      p.waitFor();
-      if (p.exitValue() == 0) {
-        System.err.println(
-            "appendToTextFileSync() - successfully appended 4 "
-                + iUrl);
-      } else {
-        System.err.println(
-            "appendToTextFileSync() - 2 error appending " + iUrl);
-      }
-    }
-
-    private static void appendToTextFile(String iUrl, String dir,
-        String queueFile, String command) {
-      new Thread(new Runnable() {
-        @Override
-        public void run() {
-          File file = Paths.get(dir).toFile();
-          if (!file.exists()) {
-            throw new RuntimeException(
-                "Non-existent: " + file.getAbsolutePath());
-          }
+        new Thread(() -> {
+          String command = "echo '" + iCategoryId.toString() + "::"
+              + theHttpUrl + "::'`date +%s` | tee -a '"
+              + (YurlStash.QUEUE_DIR + "/" + YurlStash.QUEUE_FILE_TXT)
+              + "'";
+          File file = Paths.get(YurlStash.QUEUE_DIR).toFile();
           System.err.println("appendToTextFile() - " + command);
           try {
             Process p = new ProcessBuilder().directory(file)
@@ -271,16 +205,27 @@ public class YurlStash {
             if (p.exitValue() == 0) {
               System.err.println(
                   "appendToTextFile() - successfully appended 5 "
-                      + iUrl + " to " + queueFile);
+                      + theHttpUrl + " to " + YurlStash.QUEUE_DIR
+                      + "/" + YurlStash.QUEUE_FILE_TXT);
             } else {
-              System.err.println(
-                  "appendToTextFile() - 3 error appending " + iUrl);
+              System.err
+                  .println("appendToTextFile() - 3 error appending "
+                      + theHttpUrl);
             }
           } catch (IOException e) {
             e.printStackTrace();
           }
-        }
-      }).start();
+        }).start();
+        System.err.println(
+            "YurlStash.YurlResource.stash() sending empty json response. This should work.");
+        return Response.ok()
+            .header("Access-Control-Allow-Origin", "*")
+            .entity(new JSONObject().toString())
+            .type("application/json").build();
+      } catch (Exception e) {
+        e.printStackTrace();
+        throw new JSONException(e);
+      }
     }
 
     @GET
@@ -299,12 +244,9 @@ public class YurlStash {
       System.err.println(
           "YurlStash.java::YurlResource.changeImage() - success: "
               + iUrl + " :: " + imageUrl);
-      new Thread() {
-        @Override
-        public void run() {
-          removeCategoryCache(Integer.parseInt(iCategoryId));
-        }
-      }.start();
+      new Thread(() -> {
+        removeCategoryCache(Integer.parseInt(iCategoryId));
+      }).start();
 
       return Response.ok().header("Access-Control-Allow-Origin", "*")
           .entity(new JSONObject().toString())
@@ -324,35 +266,102 @@ public class YurlStash {
         @QueryParam("url") String iUrl,
         @QueryParam("currentParentId") Integer iCurrentParentId,
         @QueryParam("created") Long created)
-        throws JSONException, IOException, InterruptedException {
+        throws JSONException, IOException {
 
-      System.err.println("Yurl.YurlResource.move() begin");
-
-      appendToTextFileSync(iUrl, iNewParentId.toString(),
-          YurlStash.QUEUE_DIR, YurlStash.QUEUE_FILE_TXT_MASTER,
-          created);
-
+      System.err.println(
+          "Yurl.YurlResource.move() begin - ARE WE STILL USING THIS?");
+      {
+        String command = "echo '" + iNewParentId.toString() + "::"
+            + iUrl + "::" + created + "' | tee -a '"
+            + (YurlStash.QUEUE_DIR + "/"
+                + YurlStash.QUEUE_FILE_TXT_MASTER)
+            + "'";
+        System.err
+            .println("YurlStash.YurlResource.appendToTextFileSync()");
+        Process p = new ProcessBuilder()
+            .directory(Paths.get(YurlStash.QUEUE_DIR).toFile())
+            .command("echo", "hello world")
+            .command("/bin/sh", "-c", command).inheritIO().start();
+        try {
+          p.waitFor();
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        if (p.exitValue() == 0) {
+          System.err.println(
+              "YurlStash.YurlResource.appendToTextFileSync() success: "
+                  + command);
+        } else {
+          System.err.println(
+              "YurlStash.YurlResource.appendToTextFileSync() failed: "
+                  + command);
+        }
+      }
       System.err.println("Yurl.YurlResource.move() 2");
-      appendToTextFileSync(iUrl, "-" + iCurrentParentId.toString(),
-          QUEUE_DIR, YurlStash.QUEUE_FILE_TXT_DELETE, created);
+      {
+        String command1 = "echo '" + "-" + iCurrentParentId.toString()
+            + "::" + iUrl + "::" + created + "' | tee -a '"
+            + (QUEUE_DIR + "/" + YurlStash.QUEUE_FILE_TXT_DELETE)
+            + "'";
+        System.err
+            .println("YurlStash.YurlResource.appendToTextFileSync()");
+        Process p = new ProcessBuilder()
+            .directory(Paths.get(QUEUE_DIR).toFile())
+            .command("echo", "hello world")
+            .command("/bin/sh", "-c", command1).inheritIO().start();
+        try {
+          p.waitFor();
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        if (p.exitValue() == 0) {
+          System.err.println(
+              "YurlStash.YurlResource.appendToTextFileSync() success: "
+                  + command1);
+        } else {
+          System.err.println(
+              "YurlStash.YurlResource.appendToTextFileSync() failed: "
+                  + command1);
+        }
+      }
       System.err.println("Yurl.YurlResource.move() 4");
 
-      new Thread() {
-        @Override
-        public void run() {
-          removeCategoryCache(iNewParentId);
-        }
-      }.start();
-      new Thread() {
-        @Override
-        public void run() {
-          removeCategoryCache(iCurrentParentId);
-        }
-      }.start();
+      new Thread(() -> {
+        removeCategoryCache(iNewParentId);
+      }).start();
+      new Thread(() -> {
+        removeCategoryCache(iCurrentParentId);
+      }).start();
 
       return Response.ok().header("Access-Control-Allow-Origin", "*")
           .entity(new JSONObject().toString())
           .type("application/json").build();
+    }
+
+    private static void removeCategoryCache(Integer iCategoryId) {
+      {
+        java.nio.file.Path path1 = Paths
+            .get(System.getProperty("user.home")
+                + "/github/yurl/tmp/urls/" + iCategoryId + ".json");
+
+        path1.toFile().delete();
+
+        System.err.println(
+            "Yurl.YurlResource.launchAsynchronousTasksHttpcat() deleted cache file 1: "
+                + path1);
+      }
+      {
+        java.nio.file.Path path = Paths
+            .get(System.getProperty("user.home")
+                + "/github/yurl/tmp/categories/topology/"
+                + iCategoryId + ".txt");
+
+        path.toFile().delete();
+
+        System.err.println(
+            "Yurl.YurlResource.launchAsynchronousTasksHttpcat() deleted cache file 2: "
+                + path);
+      }
     }
   }
 
@@ -360,6 +369,42 @@ public class YurlStash {
       throws URISyntaxException, JSONException, IOException {
     System.err.println("main() - begin");
     String port = "4447";
+
+    if (!Paths.get(QUEUE_DIR).toFile().exists()) {
+      throw new RuntimeException();
+    }
+    if (!Paths
+        .get(YurlStash.QUEUE_DIR + "/" + YurlStash.QUEUE_FILE_TXT)
+        .toFile().exists()) {
+      throw new RuntimeException();
+    }
+    if (!Paths
+        .get(YurlStash.QUEUE_DIR + "/" + YurlStash.TITLE_FILE_TXT)
+        .toFile().exists()) {
+      throw new RuntimeException();
+    }
+    if (!Paths.get(
+        YurlStash.QUEUE_DIR + "/" + YurlStash.QUEUE_FILE_TXT_MASTER)
+        .toFile().exists()) {
+      throw new RuntimeException();
+    }
+    if (!Paths.get(YurlStash.QUEUE_DIR + "/" +QUEUE_FILE_TXT_2017).toFile().exists()) {
+      throw new RuntimeException();
+    }
+    if (!Paths.get(YurlStash.QUEUE_DIR + "/" +QUEUE_FILE_TXT_DELETE).toFile().exists()) {
+      throw new RuntimeException();
+    }
+    if (!Paths
+        .get(System.getProperty("user.home") + "/github/yurl/tmp/")
+        .toFile().exists()) {
+      throw new RuntimeException();
+    }
+    if (!Paths
+        .get(System.getProperty("user.home")
+            + "/github/yurl/tmp/categories/topology/")
+        .toFile().exists()) {
+      throw new RuntimeException();
+    }
 
     // Turn off that stupid Jersey logger.
     // This works in Java but not in Groovy.
