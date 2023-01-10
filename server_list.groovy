@@ -43,9 +43,10 @@ public class YurlList {
 	private static final String DOWNLOADED_VIDEOS = System
 			.getProperty("user.home")			+ "/db.git/auto/yurl_queue_httpcat_videos_downloaded.json";
 	private static final String DOWNLOADED_VIDEOS_2017 = System
-			.getProperty("user.home")			+ "/db,git/yurl_flatfile_db/videos_download_succeeded.txt";
+			.getProperty("user.home")			+ "/db.git/yurl_flatfile_db/videos_download_succeeded.txt";
 	private static final String QUEUE_DIR = System.getProperty("user.home") + "/db.git/yurl_flatfile_db/";
-	private static final String QUEUE_FILE_TXT_DELETE = "yurl_deleted.txt";
+	private static final String QUEUE_FILE_TXT_DELETE = 
+	System.getProperty("user.home")			+ "/db.git/yurl_flatfile_db/yurl_deleted.txt";
 
 	// TODO: Regenerate the cache file using these sources of truth.
 	private static final String CATEGORY_HIERARCHY_JSON = System
@@ -564,15 +565,15 @@ public class YurlList {
 					Multimap<Integer, Integer> children = HashMultimap.create();
 					for (Integer child : childIds) {
 						if (!parents.keySet().contains(child)) {
-							System.out
-									.println(".createChildrenMultimap() ERROR : no parent for "
+							System.err
+									.println("[ERROR] createChildrenMultimap() ERROR : no parent for "
 											+ child);
 							continue;
 						}
 						Integer parent = parents.get(child);
 						children.put(parent, child);
 						if (parent == 37658) {
-							System.out.println("createChildrenMultimap() "
+							System.err.println("[DEBUG] createChildrenMultimap() "
 									+ parent + " :: " + child);
 						}
 						// System.out
@@ -619,14 +620,27 @@ public class YurlList {
 			};
 		}
 
+
+	}
+
 		private static final String CATEGORY_RELATIONSHIPS = System
 				.getProperty("user.home")				+ "/db.git/yurl_flatfile_db/yurl_category_topology.txt";
 		private static final String CATEGORY_NAMES = System
 				.getProperty("user.home")				+ "/db.git/yurl_flatfile_db/yurl_category_names.txt";
-	}
-
+				
 	public static void main(String[] args) throws URISyntaxException,
 			JSONException, IOException {
+
+String[] pathsToCheck = {CATEGORY_RELATIONSHIPS, CATEGORY_NAMES,  YURL_ORDINALS,
+DOWNLOADED_VIDEOS,
+                         DOWNLOADED_VIDEOS_2017, CATEGORY_HIERARCHY_JSON,
+                        QUEUE_DIR , QUEUE_FILE_TXT_DELETE};
+        for (String pathToCheck : pathsToCheck) {
+        	if (!Paths.get(pathToCheck).toFile().exists()) {
+        		System.err.println("Does not exist: " + pathToCheck);
+				System.exit(-1);
+        	}
+        }
 
 		YurlResource.refreshCategoriesTreeCacheInSeparateThreadNoNeo4j()
 				.start();
