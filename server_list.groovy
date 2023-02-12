@@ -45,8 +45,7 @@ public class YurlList {
 	private static final String DOWNLOADED_VIDEOS_2017 = System
 			.getProperty("user.home")			+ "/db.git/yurl_flatfile_db/videos_download_succeeded.txt";
 	private static final String QUEUE_DIR = System.getProperty("user.home") + "/db.git/yurl_flatfile_db/";
-	private static final String QUEUE_FILE_TXT_DELETE = 
-	System.getProperty("user.home")			+ "/db.git/yurl_flatfile_db/yurl_deleted.txt";
+	private static final String QUEUE_FILE_TXT_DELETE = QUEUE_DIR + "/yurl_deleted.txt";
 
 	// TODO: Regenerate the cache file using these sources of truth.
 	private static final String CATEGORY_HIERARCHY_JSON = System
@@ -213,7 +212,7 @@ public class YurlList {
 				JSONArray urlsInCategory = new JSONArray();
 
 				List<String> lines1 = FileUtils.readLines(
-						Paths.get(QUEUE_DIR + "/" + QUEUE_FILE_TXT_DELETE)
+						Paths.get(QUEUE_FILE_TXT_DELETE)
 								.toFile(), "UTF-8");
 
 				List<String> remove = getRemoveLines(lines1);
