@@ -106,5 +106,23 @@
     "url": "https://www.amazon.com/gp/product/B00154YWJ0/ref=oh_aui_search_detailpage?ie=UTF8&psc=1",
     "parentId": "608522",
     "ordinal": 1512525295
+  },
+  {
+    "downloaded_video": false,
+    "created": 1581989131,
+    "id": "STOP_RELYING_ON_THIS",
+    "title": "<fill this in>",
+    "url": "https://www.amazon.com/HotHands-10-count-pack-warmers/dp/B00PGBN11S/ref=pd_bxgy_img_2/134-7144187-9785118?_encoding=UTF8&pd_rd_i=B00PGBN11S&pd_rd_r=2bc6c50f-8492-4b71-b638-95f44a183fb8&pd_rd_w=4gei9&pd_rd_wg=4vVt1&pf_rd_p=fd08095f-55ff-4a15-9b49-4a1a719225a9&pf_rd_r=VHC1P8B0ZQ1GWE8NMVTJ&psc=1&refRID=VHC1P8B0ZQ1GWE8NMVTJ",
+    "parentId": "608522",
+    "ordinal": 1581989131
+  },
+  {
+    "downloaded_video": false,
+    "created": 1581989136,
+    "id": "STOP_RELYING_ON_THIS",
+    "title": "<fill this in>",
+    "url": "https://www.amazon.com/HotHands-Toe-Warmers-Odorless-Activated/dp/B00DPKYI3W/ref=sr_1_17?crid=38NX9CGDPFVXD&dchild=1&keywords=toe+warmers&qid=1580947817&sprefix=tempurpedic+mask%2Caps%2C197&sr=8-17",
+    "parentId": "608522",
+    "ordinal": 1581989136
   }
 ]

@@ -1100,5 +1100,42 @@
     "url": "https://www.amazon.com/ScotchBlue-Painters-Multi-Use-94-Inch-60-Yard/dp/B00004Z4CP/ref=sr_1_3?crid=F5SCW7RC60C5&keywords=painter%27s+tape&qid=1670722741&sprefix=painter%27s+tape%2Caps%2C161&sr=8-3",
     "parentId": "230182",
     "ordinal": 1670824036
+  },
+  {
+    "downloaded_video": false,
+    "user_image": "https://m.media-amazon.com/images/I/71e8yF090iL._AC_SL1500_.jpg",
+    "created": 1679333710,
+    "id": "STOP_RELYING_ON_THIS",
+    "title": "<fill this in>",
+    "url": "https://www.amazon.com/Pocket-Tripod-Pro-Geometrical-Photography/dp/B08M5TBFKM/ref=cm_cr_arp_d_product_top?ie=UTF8",
+    "parentId": "230182",
+    "ordinal": 1679333710
+  },
+  {
+    "downloaded_video": false,
+    "created": 1679130787,
+    "id": "STOP_RELYING_ON_THIS",
+    "title": "<fill this in>",
+    "url": "https://www.amazon.com/AVEDA-0018084507216-Wooden-Paddle-Brush/dp/B003H7MY98",
+    "parentId": "230182",
+    "ordinal": 1679130787
+  },
+  {
+    "downloaded_video": false,
+    "created": 1680292559,
+    "id": "STOP_RELYING_ON_THIS",
+    "title": "<fill this in>",
+    "url": "https://www.amazon.com/dp/B0761Y7F8K?tag=travelandleisure-onsite-prod-20&linkCode=ogi&th=1&ascsubtag=5428571%7Cna2c80c1e3fb84632bd8e6418847f3b1719%7CB0761Y7F8K",
+    "parentId": "230182",
+    "ordinal": 1680292559
+  },
+  {
+    "downloaded_video": false,
+    "created": 1690864542636,
+    "id": "STOP_RELYING_ON_THIS",
+    "title": "<fill this in>",
+    "url": "https://www.amazon.com/Scotch-Brite-Non-Scratch-Surface-Scrubbing-Assorted/dp/B0076RQNDI/ref=sr_1_52?keywords=scouring%2Bpad&qid=1690864447&rdc=1&sr=8-52&th=1",
+    "parentId": "230182",
+    "ordinal": 1690864542636
   }
 ]
