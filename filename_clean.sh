@@ -1,1 +1,0 @@
-../../computers.git/ubuntu/bin/2021/filename_clean.sh

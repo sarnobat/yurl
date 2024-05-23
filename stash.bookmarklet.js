@@ -1,1 +1,0 @@
-stash/version1/stash.bookmarklet.js

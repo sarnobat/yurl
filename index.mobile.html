@@ -1,0 +1,6 @@
+TODO build mobile yurl from this (use parenthesized pipeline):<br>
+/home/sarnobat/db.git/2022/yurl_flatfile_db/2022/yurl_master_images.txt
+TODO: <a href="index.mobile.html.2">index.mobile.html.2</a>
+<pre>
+grep amazon /home/sarnobat/db.git/2022/yurl_flatfile_db/2022/yurl_master_images.txt | grep -P '::.*amazon.com/images/I/' | perl -pe 's{.*::}{}' | uniq | sh /home/sarnobat/computers.git/mac/bin/htmlify.sh | tail -100 | tac | tee ~/www/yurl/index.mobile.html.2
+</pre>

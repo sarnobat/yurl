@@ -1265,7 +1265,7 @@ public class YurlStash {
 	@SuppressWarnings("unused")
 	public static void main(String[] args) throws URISyntaxException, JSONException, IOException {
 System.out.println("main() - begin");
-		String port = 4447;
+		String port = "4447";
 		_parseOptions: {
 
 		}
@@ -1283,7 +1283,7 @@ System.out.println("main() - begin");
 			// Problem - this won't get executed until the server ends
 			//YurlWorldResource.downloadUndownloadedVideosInSeparateThread() ;
 		} catch (Exception e) {
-//	e.printStackTrace();
+	e.printStackTrace();
 			System.out.println("Not creating server instance");
 		}
 	}
