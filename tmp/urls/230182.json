@@ -1137,5 +1137,43 @@
     "url": "https://www.amazon.com/Scotch-Brite-Non-Scratch-Surface-Scrubbing-Assorted/dp/B0076RQNDI/ref=sr_1_52?keywords=scouring%2Bpad&qid=1690864447&rdc=1&sr=8-52&th=1",
     "parentId": "230182",
     "ordinal": 1690864542636
+  },
+  {
+    "downloaded_video": false,
+    "user_image": "https://m.media-amazon.com/images/I/61NUpMdra4L._AC_SX679_.jpg",
+    "created": 1699636062717,
+    "id": "STOP_RELYING_ON_THIS",
+    "title": "<fill this in>",
+    "url": "https://www.amazon.com/Georgia-Bulldogs-Black-Embroidered-Hoody/dp/B07GZ1HG1R/ref=sr_1_7?keywords=uga+hoodie&qid=1699635950&s=fan-shop&sr=1-7",
+    "parentId": "230182",
+    "ordinal": 1699636062717
+  },
+  {
+    "downloaded_video": false,
+    "user_image": "https://m.media-amazon.com/images/I/511mDB0w-XL._AC_SL1500_.jpg",
+    "created": 1699847198,
+    "id": "STOP_RELYING_ON_THIS",
+    "title": "<fill this in>",
+    "url": "https://www.amazon.com/English-Couple-Instructions-Together-Acrylic/dp/B0B45Y53JL/ref=sr_1_9?keywords=romance+dice&qid=1699639458&sr=8-9",
+    "parentId": "230182",
+    "ordinal": 1699847198
+  },
+  {
+    "downloaded_video": false,
+    "created": 1701746829936,
+    "id": "STOP_RELYING_ON_THIS",
+    "title": "<fill this in>",
+    "url": "https://www.amazon.com/dp/B00974KTJM/ref=vp_d_vp_d_fuw_pd_pd?_encoding=UTF8&pf_rd_p=f20fcda8-2440-4bfe-9c09-83295cb4a15a&pf_rd_r=6N39KR9ZWWAQ3CYKT6CG&pd_rd_wg=mOMNJ&pd_rd_i=B00974KTJM&pd_rd_w=fZHFj&content-id=amzn1.sym.f20fcda8-2440-4bfe-9c09-83295cb4a15a&pd_rd_r=4ca9b369-5eb8-4276-ac79-0ce25d3ba5dd&psc=1",
+    "parentId": "230182",
+    "ordinal": 1701746829936
+  },
+  {
+    "downloaded_video": false,
+    "created": 1722309104595,
+    "id": "STOP_RELYING_ON_THIS",
+    "title": "<fill this in>",
+    "url": "https://www.amazon.com/Squire-Stratocaster-Electric-Fingerboard-Pickguard/dp/B0BVGPSJMJ",
+    "parentId": "230182",
+    "ordinal": 1722309104595
   }
 ]
