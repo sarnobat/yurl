@@ -6,18 +6,18 @@
 <link rel="stylesheet" href="http://jqueryui.com/jquery-wp-content/themes/jqueryui.com/style.css">
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
-<script src="http://netgear.r23c.com/yurl/jquery/jquery-ui.js"></script>
-<script src="http://netgear.r23c.com/yurl/js/imagezoom.ssarnobat.js"></script>
-<script type="text/javascript" src="http://netgear.r23c.com/yurl/jquery/purl.js"></script>
+<script src="/yurl/jquery/jquery-ui.js"></script>
+<script src="/yurl/js/imagezoom.ssarnobat.js"></script>
+<script type="text/javascript" src="/yurl/jquery/purl.js"></script>
 <!-- we can't use the kb_shortcuts API because you can't keep the shift key held down in between keypresses -->
-<script src="http://netgear.r23c.com/yurl/js/webtoolkit.md5.js"></script>
+<script src="/yurl/js/webtoolkit.md5.js"></script>
 <script type="text/javascript" src="d3/d3.js"></script>
 <script type="text/javascript" src="d3/d3.geom.js"></script>
 <script type="text/javascript" src="d3/d3.layout.js"></script>
 <script>
 
 
-var host = "http://netgear.r23c.com";
+var host = "http://localhost";
 var urlBase = "http://netgear.r23c.com:44447/yurl";
 var rootId;
 var parentOfRootId;
@@ -1690,7 +1690,7 @@ TODO:<br>
 -->
 <br>
 						<div id="tabs">
-							  <a href="http://netgear.r23c.com/yurl/?rootId=221013&limit=500" id="url">http://netgear.r23c.com/yurl/?rootId=221013&limit=500</a>
+							  <a href="/yurl/?rootId=221013&limit=500" id="url">/yurl/?rootId=221013&limit=500</a>
 							  <ul>
 								<li><a href="#tabs-1">Grid/Thumbnails</a></li>
 								<li><a href="#tabs-2">Cards</a></li>
@@ -1800,7 +1800,7 @@ TODO: create a static html that regenerates this (maybe mobile-friendly, and pla
 <textarea id="urlBatchToSend" rows="20" cols="100"></textarea>
 
 <textarea cols=200>
-javascript:window.location.href = 'http://netgear.r23c.com/yurl/stash2.html?url=' + encodeURIComponent(document.URL) + '&nodeId=45'  ;
+javascript:window.location.href = '/yurl/stash2.html?url=' + encodeURIComponent(document.URL) + '&nodeId=45'  ;
 /* main: 45, product: 29196, video: 37658, tech: 46, other: 29172 */
 </textarea>
 <br>

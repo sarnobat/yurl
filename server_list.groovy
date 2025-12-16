@@ -223,6 +223,11 @@ public class YurlList {
 				List<String> lines = FileUtils.readLines(Paths.get(p2).toFile(), "UTF-8");
 				System.err.println("[INFO] getUrlsInCategory() - lines = " + lines.size());
 
+				if (lines.size() == 0) {
+					System.err.println("[ERROR] getUrlsInCategory() - no lines in " + Paths.get(p2));
+					System.exit(-1);
+				}
+
 				Map<String, String> userImages = getUserImages(Paths
 						.get(System.getProperty("user.home") + "/db.git/yurl_flatfile_db/yurl_master_images.txt"));
 
@@ -329,7 +334,7 @@ public class YurlList {
 							
 			System.err
 					.println("[DEBUG] YurlList.YurlResource.filterToBeRemovedLines() remove = "
-							+ remove.size());
+							+ remove.size() + " lines to remove");
 							
 			for (String line : remove) {
 				if (line.contains("B07L4CTWV2")) {
@@ -410,7 +415,7 @@ public class YurlList {
 				
 			}
 			if (!found2) {
-				System.err.println("[DEBUG] filterToBeRemovedLines() RabbitMQ");
+				System.err.println("[DEBUG] filterToBeRemovedLines() sanity check failed - RabbitMQ-Depth-Gavin-M-Roy");
 				System.exit(-1);
 			}
 			
