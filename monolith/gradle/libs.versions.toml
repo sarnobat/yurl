@@ -4,7 +4,15 @@
 [versions]
 guava = "33.4.5-jre"
 orgJson = "20240303"
+commonsIo = "2.16.1"
+jersey = "2.44"
+javaxWsRs = "2.1.1"
+jsr305 = "3.0.2"
 
 [libraries]
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 orgJson = { module = "org.json:json", version.ref = "orgJson" }
+commonsIo = { module = "commons-io:commons-io", version.ref = "commonsIo" }
+jerseyJdkHttp = { module = "org.glassfish.jersey.containers:jersey-container-jdk-http", version.ref = "jersey" }
+javaxWsRsApi = { module = "javax.ws.rs:javax.ws.rs-api", version.ref = "javaxWsRs" }
+jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }

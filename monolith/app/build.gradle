@@ -20,6 +20,10 @@ dependencies {
     // This dependency is used by the application.
     implementation libs.guava
     implementation libs.orgJson
+    implementation libs.commonsIo
+    implementation libs.jerseyJdkHttp
+    implementation libs.javaxWsRsApi
+    implementation libs.jsr305
 }
 
 testing {
