@@ -1,1 +1,1 @@
-../../../../../../../server_list.groovy
+../../../../../server_list.groovy
