@@ -22,6 +22,7 @@ dependencies {
     implementation libs.orgJson
     implementation libs.commonsIo
     implementation libs.jerseyJdkHttp
+    implementation 'org.glassfish.jersey.inject:jersey-hk2:2.44'
     implementation libs.javaxWsRsApi
     implementation libs.jsr305
 }
