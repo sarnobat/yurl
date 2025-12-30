@@ -5,10 +5,11 @@
 public class App {
 
     public static void main(String[] args) {
+        // port is hardcoded, we just have this for "documentation"
         String[] yurlArgs = new String[] { "YurlList.java", "--port=4443", "-DcacheUrls=true" };
         System.setProperty("cacheUrls", "true");
         try {
-            //YurlList.main(yurlArgs);
+            YurlList.main(yurlArgs);
         } catch (Exception e) {
             throw new RuntimeException("Failed to launch YurlList", e);
         }
