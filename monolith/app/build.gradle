@@ -45,5 +45,5 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'com.rohidekar.App'
+    mainClass = 'App'
 }
