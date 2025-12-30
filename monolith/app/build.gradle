@@ -23,6 +23,8 @@ dependencies {
     implementation libs.commonsIo
     implementation libs.jerseyJdkHttp
     implementation 'org.glassfish.jersey.inject:jersey-hk2:2.44'
+    implementation 'org.glassfish.jersey.containers:jersey-container-grizzly2-http:2.44'
+    implementation 'commons-cli:commons-cli:1.6.0'
     implementation 'javax.activation:activation:1.1.1'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
     implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.3'
