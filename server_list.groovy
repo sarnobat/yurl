@@ -661,6 +661,7 @@ DOWNLOADED_VIDEOS,
 			// Problem - this won't get executed until the server ends
 			// YurlWorldResource.downloadUndownloadedVideosInSeparateThread() ;
 		} catch (Exception e) {
+			e.printStackTrace(System.err);
 			System.out.println("Not creating server instance");
 		}
 	}
