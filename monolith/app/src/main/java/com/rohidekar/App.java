@@ -6,6 +6,12 @@ package com.rohidekar;
 public class App {
 
     public static void main(String[] args) {
-        System.out.println("hello");
+        String[] yurlArgs = new String[] { "YurlList.java", "--port=4443", "-DcacheUrls=true" };
+        System.setProperty("cacheUrls", "true");
+        try {
+            YurlList.main(yurlArgs);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to launch YurlList", e);
+        }
     }
 }
