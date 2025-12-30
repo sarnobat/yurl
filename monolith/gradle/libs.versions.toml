@@ -3,6 +3,8 @@
 
 [versions]
 guava = "33.4.5-jre"
+orgJson = "20240303"
 
 [libraries]
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
+orgJson = { module = "org.json:json", version.ref = "orgJson" }
