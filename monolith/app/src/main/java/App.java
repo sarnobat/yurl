@@ -19,5 +19,6 @@ public class App {
         } catch (Exception e) {
             throw new RuntimeException("Failed to launch HttpCatWithWrite", e);
         }
+        System.err.println("[warn] change image, move and /parent have not been moved to miroservices.");
     }
 }
