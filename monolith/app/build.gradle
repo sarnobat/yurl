@@ -28,6 +28,7 @@ dependencies {
     implementation 'javax.activation:activation:1.1.1'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
     implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.3'
+    implementation 'org.jsoup:jsoup:1.11.2'
     implementation libs.javaxWsRsApi
     implementation libs.jsr305
 }

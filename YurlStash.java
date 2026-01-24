@@ -365,6 +365,7 @@ public class YurlStash {
     }
   }
 
+  // args are not used, they're just for grepping crontab
   public static void main(String[] args)
       throws URISyntaxException, JSONException, IOException {
     System.err.println("main() - begin");
@@ -376,12 +377,12 @@ public class YurlStash {
     if (!Paths
         .get(YurlStash.QUEUE_DIR + "/" + YurlStash.QUEUE_FILE_TXT)
         .toFile().exists()) {
-      throw new RuntimeException();
+      throw new RuntimeException("does not exist: " + YurlStash.QUEUE_DIR + "/" + YurlStash.QUEUE_FILE_TXT);
     }
     if (!Paths
         .get(YurlStash.QUEUE_DIR + "/" + YurlStash.TITLE_FILE_TXT)
         .toFile().exists()) {
-      throw new RuntimeException();
+      throw new RuntimeException("does not exist: " + YurlStash.QUEUE_DIR + "/" + YurlStash.TITLE_FILE_TXT);
     }
     if (!Paths.get(
         YurlStash.QUEUE_DIR + "/" + YurlStash.QUEUE_FILE_TXT_MASTER)
@@ -389,21 +390,22 @@ public class YurlStash {
       throw new RuntimeException();
     }
     if (!Paths.get(YurlStash.QUEUE_DIR + "/" +QUEUE_FILE_TXT_2017).toFile().exists()) {
-      throw new RuntimeException();
+      throw new RuntimeException("does not exist: " + YurlStash.QUEUE_DIR + "/" +QUEUE_FILE_TXT_2017);
     }
     if (!Paths.get(YurlStash.QUEUE_DIR + "/" +QUEUE_FILE_TXT_DELETE).toFile().exists()) {
-      throw new RuntimeException();
+      throw new RuntimeException("does not exist: " + YurlStash.QUEUE_DIR + "/" +QUEUE_FILE_TXT_DELETE);
     }
     if (!Paths
         .get(System.getProperty("user.home") + "/github/yurl/tmp/")
         .toFile().exists()) {
-      throw new RuntimeException();
+      throw new RuntimeException("does not exist: " + System.getProperty("user.home") + "/github/yurl/tmp/");
     }
     if (!Paths
         .get(System.getProperty("user.home")
             + "/github/yurl/tmp/categories/topology/")
         .toFile().exists()) {
-      throw new RuntimeException();
+      throw new RuntimeException("does not exist: " + System.getProperty("user.home")
+            + "/github/yurl/tmp/categories/topology/");
     }
 
     // Turn off that stupid Jersey logger.
