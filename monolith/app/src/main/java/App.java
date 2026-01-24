@@ -4,7 +4,13 @@
 
 public class App {
 
+    // This is why microservices suck
     public static void main(String[] args) {
+
+        //
+        // List
+        //
+
         // port is hardcoded, we just have this for "documentation"
         String[] yurlArgs = new String[] { "YurlList.java", "--port=4443", "-DcacheUrls=true" };
         System.setProperty("cacheUrls", "true");
@@ -13,12 +19,27 @@ public class App {
         } catch (Exception e) {
             throw new RuntimeException("Failed to launch YurlList", e);
         }
+
+        //
+        // Stash2
+        //
         try {
             String[] s = new String[] { "4465" };
             HttpCatWithWrite.main(s);
         } catch (Exception e) {
             throw new RuntimeException("Failed to launch HttpCatWithWrite", e);
         }
+
+        //
+        // Stash1 (Change Image)
+        //
+        try {
+            String[] s = new String[] { "4447" };
+            YurlStash.main(s);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to launch HttpCatWithWrite", e);
+        }
+
         System.err.println("[warn] change image, move and /parent have not been moved to miroservices.");
     }
 }

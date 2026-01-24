@@ -1,1 +1,1 @@
-../../../../../../../../depot_parent/graalvm_aotc_java/5_java_httpcat_with_write/app/src/main/java/com/HttpCatWithWrite.java
+../../../../../../../../2025/depot_parent/graalvm_aotc_java/5_java_httpcat_with_write/app/src/main/java/com/HttpCatWithWrite.java
