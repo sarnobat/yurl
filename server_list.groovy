@@ -70,7 +70,7 @@ public class YurlList {
 			JSONObject categoriesTreeJson;
 
 			if (Paths.get(CATEGORY_HIERARCHY_JSON).toFile().exists()) {
-				System.out
+				System.err
 						.println("getUrls() - preloaded categories tree not ready");
 				categoriesTreeJson = readFromCache(CATEGORY_HIERARCHY_JSON);
 			} else {
@@ -85,7 +85,7 @@ public class YurlList {
 
 				// If there were multiple clients here, you'd need to block the
 				// 2nd onwards
-				System.out
+				System.err
 						.println("YurlWorldResource.getUrls() - not using cache");
 				JSONObject retVal1;
 				retVal1 = new JSONObject();
@@ -120,11 +120,11 @@ public class YurlList {
 		}
 
 		private JSONObject readFromCache(String filePath) throws IOException {
-			System.out.println("YurlList.YurlResource.readFromCache() "
+			System.err.println("YurlList.YurlResource.readFromCache() "
 					+ filePath);
 			File f = Paths.get(filePath).toFile();
 			String s = FileUtils.readFileToString(f, "UTF-8");
-			System.out.println("YurlList.YurlResource.readFromCache() success");
+			System.err.println("YurlList.YurlResource.readFromCache() success");
 			return new JSONObject(s);
 		}
 
@@ -132,25 +132,25 @@ public class YurlList {
 		// TODO: this file is not in the right format
 		private Collection<String> getDownloadedVideos(String downloadedVideos)
 				throws IOException {
-			System.out.println("YurlList.YurlResource.getDownloadedVideos()");
+			System.err.println("YurlList.YurlResource.getDownloadedVideos()");
 			return FileUtils.readLines(Paths.get(downloadedVideos).toFile(),
 					"UTF-8");
 		}
 
 		private Collection<String> getDownloadedVideos2017(
 				String downloadedVideos) throws IOException {
-			System.out
+			System.err
 					.println("YurlList.YurlResource.getDownloadedVideos2017() begin: " + downloadedVideos);
 			List<String> readLines = FileUtils.readLines(
 					Paths.get(downloadedVideos).toFile(), "UTF-8");
-			System.out
+			System.err
 					.println("YurlList.YurlResource.getDownloadedVideos2017() 2");
 			Set<String> ret = new HashSet<String>();
 			for (String line : readLines) {
 				String[] elements = line.split("::");
 				ret.add(elements[0]);
 			}
-			System.out
+			System.err
 					.println("[INFO] YurlList.YurlResource.getDownloadedVideos2017() end");
 			return ret;
 		}
@@ -168,7 +168,7 @@ public class YurlList {
 			Map<String, String> orderMap = buildOrderMap(YURL_ORDINALS, iRootId);
 
 			for (String categoryId : categoriesToGetUrlsFrom) {
-				System.out
+				System.err
 						.println("[INFO] YurlList.YurlResource.getItemsAtLevelAndChildLevels() "
 								+ categoryId);
 				if (categoryId.length() > 10) {
@@ -318,7 +318,7 @@ public class YurlList {
 		}
 
 		private static List<String> getRemoveLines(List<String> lines) {
-			System.out.println("YurlList.YurlResource.getRemoveLines()");
+			System.err.println("YurlList.YurlResource.getRemoveLines()");
 			List<String> ret = new LinkedList<String>();
 			for (String line : lines) {
 				if (line.startsWith("-")) {
@@ -484,7 +484,7 @@ public class YurlList {
 		static String home = System.getProperty("user.home");
 		private static Collection<String> getChildCategories(String iRootId)
 				throws IOException {
-			System.out.println("getChildCategories() - begin");
+			System.err.println("getChildCategories() - begin");
 			File file = Paths.get(
 					home + "/github/yurl/tmp/categories/topology/"
 							+ iRootId + ".txt").toFile();
@@ -508,7 +508,7 @@ public class YurlList {
 				}
 				FileUtils.writeLines(file, "UTF-8", childCategories);
 			}
-			System.out
+			System.err
 					.println("YurlList.YurlResource.getChildCategories() file = "
 							+ file.getPath());
 			List<String> categoryLines = FileUtils.readLines(file, "UTF-8");
@@ -538,7 +538,7 @@ public class YurlList {
 					for (String line : readFile(rel)) {
 						String[] elements = line.split("::");
 						if (37658 == Integer.parseInt(elements[1])) {
-							System.out.println("run() "
+							System.err.println("run() "
 									+ Integer.parseInt(elements[0]));
 						}
 						parents.put(Integer.parseInt(elements[1]),
@@ -665,7 +665,7 @@ DOWNLOADED_VIDEOS,
 			// YurlWorldResource.downloadUndownloadedVideosInSeparateThread() ;
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
-			System.out.println("Not creating server instance");
+			System.err.println("Not creating server instance");
 		}
 	}
 }

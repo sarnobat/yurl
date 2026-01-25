@@ -38,9 +38,11 @@ public class App {
         try {
             String[] s = new String[] { "4465" };
             withTeeOut(
+                () -> HttpCatWithWrite.main(new String[]{"4465"}),
                 System.getProperty("user.home")
                     + "/db.git/yurl_flatfile_db/yurl_master.txt",
-                () -> HttpCatWithWrite.main(new String[]{"4465"})
+                System.getProperty("user.home")
+                    + "/db.git/yurl_flatfile_db/yurl_queue_2026.txt"
             );
         } catch (Exception e) {
             throw new RuntimeException("Failed to launch HttpCatWithWrite", e);
@@ -49,15 +51,26 @@ public class App {
         System.err.println("[warn] change image, move and /parent have not been moved to miroservices.");
     }
 
-    private static void withTeeOut(String path, Runnable r) {
+    // This was a lot simpler in a cron job
+    private static void withTeeOut(Runnable r, String... paths) {
+        if (paths == null || paths.length == 0) {
+            r.run();
+            return;
+        }
+
         PrintStream orig = System.out;
-        try (PrintStream file = new PrintStream(
-                new FileOutputStream(path, true), true)) {
+        java.util.List<PrintStream> files = new java.util.ArrayList<>();
+        try {
+            for (String path : paths) {
+                files.add(new PrintStream(new FileOutputStream(path, true), true));
+            }
 
             System.setOut(new PrintStream(new OutputStream() {
                 @Override public void write(int b) throws IOException {
                     orig.write(b);
-                    file.write(b);
+                    for (PrintStream file : files) {
+                        file.write(b);
+                    }
                 }
             }, true));
 
@@ -66,6 +79,9 @@ public class App {
             throw new UncheckedIOException(e);
         } finally {
             System.setOut(orig);
+            for (PrintStream file : files) {
+                file.close();
+            }
         }
     }
 }
